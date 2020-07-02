@@ -13,11 +13,14 @@ add_definitions(-DCMAKE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 # Main Sources
 #----------------------------------------------------------------
 set(ser_includes
-    
+    include/Die.hpp
+    include/Combatant.hpp
+    include/Utility.hpp
 )
 
 set(ser_sources
-    
+    src/Die.cpp
+    src/Combatant.cpp
 )
 
 set(all_sources

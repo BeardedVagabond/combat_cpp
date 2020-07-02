@@ -8,7 +8,7 @@ int main()
     std::cout << "Hello, world!" << std::endl;
 
     // Functionality test of Die object
-    bv::actors::Die d6(6);
+    Die d6(6);
     std::cout << d6.ToString() << std::endl;
     std::cout << "Rolling 4 times..." << std::endl;
     auto results = d6.Roll(4);
@@ -18,8 +18,8 @@ int main()
     }
 
     // Functionality test of Combatant object
-    bv::actors::Combatant nate("Nate");
-    bv::actors::Combatant test("Enemy");
+    Combatant nate("Nate");
+    Combatant test("Enemy");
 
     std::cout << nate.ToString() << std::endl;
     std::cout << test.ToString() << std::endl;
