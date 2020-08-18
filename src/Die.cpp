@@ -1,16 +1,16 @@
 #include "Die.hpp"
 
-Die::Die(const int& num_sides)
+Die::Die(uint8_t num_sides)
     : m_sides(num_sides)
     , m_rand_dev()
     , m_rand_eng(m_rand_dev())
 {
 }
 
-std::vector<int> Die::Roll(const int& num_rolls)
+std::vector<uint8_t> Die::Roll(uint8_t num_rolls)
 {
     std::uniform_int_distribution<std::mt19937::result_type> dist(1, m_sides);
-    std::vector<int> results;
+    std::vector<uint8_t> results;
     results.reserve(num_rolls);
     for (int i = 0; i < num_rolls; ++i)
     {

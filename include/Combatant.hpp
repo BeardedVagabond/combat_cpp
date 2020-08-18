@@ -2,6 +2,7 @@
 #define COMBAT_CPP_COMBATANT_HPP_
 
 #include <string>
+#include <cstdint>
 
 #include "Die.hpp"
 #include "Utility.hpp"
@@ -11,33 +12,33 @@ class Combatant
 public:
     explicit Combatant(const std::string& name);
 
-    int Attack(Combatant* const target) const;
+    uint8_t Attack(Combatant* const target) const;
 
-    int Heal();
+    uint8_t Heal();
 
     std::string ToString() const;
 
     std::string GetName() const;
 
-    int GetHealth() const;
+    uint8_t GetHealth() const;
 private:
     std::unique_ptr<Die> m_d20;
     std::unique_ptr<Die> m_d8;
     std::unique_ptr<Die> m_d6;
     std::string m_name;
-    std::vector<int> m_stats;
-    std::vector<int> m_modifiers;
-    int m_max_health;
-    int m_armor_class;
-    int m_health;
+    std::vector<uint8_t> m_stats;
+    std::vector<uint8_t> m_modifiers;
+    uint8_t m_max_health;
+    uint8_t m_armor_class;
+    uint8_t m_health;
 
     // Chooses sum of the best three rolls from 4d6 for each stat
     void StatRolls();
 
-    int DetermineModifier(const int& stat) const;
+    uint8_t DetermineModifier(uint8_t stat) const;
 
     // Be sure to add modifier to damage dice!
-    void SustainDamage(const int& total_damage);
+    void SustainDamage(uint8_t total_damage);
 };
 
 #endif //! COMBAT_CPP_COMBATANT_HPP_

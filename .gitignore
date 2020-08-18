@@ -33,6 +33,8 @@
 
 # Build files
 /build
+/out
 
-# VS Code
+# VS Code / Studio
 /.vscode
+/.vs

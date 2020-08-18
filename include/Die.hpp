@@ -8,13 +8,13 @@
 class Die 
 {
 public:
-    explicit Die(const int& num_sides);
+    explicit Die(uint8_t num_sides);
 
-    std::vector<int> Roll(const int& num_rolls);
+    std::vector<uint8_t> Roll(uint8_t num_rolls);
 
     std::string ToString() const;
 private:
-    int m_sides;
+    uint8_t m_sides;
     std::random_device m_rand_dev;
     std::mt19937 m_rand_eng;
 };

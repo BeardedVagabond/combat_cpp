@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <cstdint>
 
 class Utility
 {
@@ -15,17 +16,17 @@ public:
         Critical,
     };
 
-    static int SumDice(const std::vector<int>& dice)
+    static uint8_t SumDice(const std::vector<uint8_t>& dice)
     {
-        int sum = 0;
-        for (int die : dice)
+        uint8_t sum = 0;
+        for (uint8_t die : dice)
         {
             sum += die;
         }
         return sum;
     };
 
-    static std::string StatString(const std::vector<int>& stats)
+    static std::string StatString(const std::vector<uint8_t>& stats)
     {
         std::string str = "";
         str += "{ STR: " + std::to_string(stats[0]);

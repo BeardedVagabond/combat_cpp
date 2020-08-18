@@ -14,10 +14,10 @@ Combatant::Combatant(const std::string& name)
     StatRolls();
 }
 
-int Combatant::Attack(Combatant* const target) const
+uint8_t Combatant::Attack(Combatant* const target) const
 {
     auto hit_die = m_d20->Roll(1)[0];
-    int damage_dice = 0;
+    uint8_t damage_dice = 0;
     if (hit_die == 20)
     {
         damage_dice = Utility::SumDice(m_d8->Roll(2));
@@ -31,13 +31,13 @@ int Combatant::Attack(Combatant* const target) const
     return damage_dice;
 }
 
-int Combatant::Heal()
+uint8_t Combatant::Heal()
 {
-    int heal_dice = Utility::SumDice(m_d8->Roll(1));
+    uint8_t heal_dice = Utility::SumDice(m_d8->Roll(1));
     if (!m_health == m_max_health)
     {
-        int heal_amount = heal_dice + m_modifiers[2];
-        m_health = std::min(m_max_health, std::max(0, m_health + heal_amount));
+        uint8_t heal_amount = heal_dice + m_modifiers[2];
+        m_health = std::min(m_max_health, static_cast<uint8_t>(std::max(0, m_health + heal_amount)));
     }
     return 0;
 }
@@ -59,16 +59,16 @@ std::string Combatant::GetName() const
     return m_name;
 }
 
-int Combatant::GetHealth() const
+uint8_t Combatant::GetHealth() const
 {
     return m_health;
 }
 
 void Combatant::StatRolls()
 {
-    for (int i = 0; i < 6; ++i)
+    for (uint8_t i = 0; i < 6; ++i)
     {
-        std::vector<int> rolls = m_d6->Roll(4);
+        std::vector<uint8_t> rolls = m_d6->Roll(4);
         std::sort(rolls.rbegin(), rolls.rend());
         rolls.pop_back();
         m_stats.push_back(Utility::SumDice(rolls));
@@ -80,7 +80,7 @@ void Combatant::StatRolls()
     m_health = m_max_health;
 }
 
-int Combatant::DetermineModifier(const int& stat) const
+uint8_t Combatant::DetermineModifier(uint8_t stat) const
 {    
     if (2 < stat && stat <= 4) {
         return -4;
@@ -105,8 +105,8 @@ int Combatant::DetermineModifier(const int& stat) const
     }    
 }
 
-void Combatant::SustainDamage(const int& total_damage)
+void Combatant::SustainDamage(uint8_t total_damage)
 {
-    m_health = std::min(m_max_health, std::max(0, m_health - total_damage));
+    m_health = std::min(m_max_health, static_cast<uint8_t>(std::max(0, m_health - total_damage)));
 }
 
