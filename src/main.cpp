@@ -28,7 +28,7 @@ int main()
     {
         std::cout << nate.GetName() << " attacked " << test.GetName();
         std::cout << " for " << std::to_string(nate.Attack(&test)) << " damage!\n";
-        std::cout << test.GetName() << " now has " << test.GetHealth() << " HP!\n";
+        std::cout << test.GetName() << " now has " << std::to_string(test.GetHealth()) << " HP!\n";
     }
 
     return 0;

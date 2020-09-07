@@ -87,6 +87,23 @@ target_include_directories(exampleMain
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(exampleMain
+add_executable(unitTests
+    src/unitTests.cpp
+    ${all_sources}
+)
+
+target_compile_features(unitTests
+    PRIVATE
+        cxx_std_17
+)
+
+target_include_directories(unitTests
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_link_libraries(unitTests
     gtest_main
 )

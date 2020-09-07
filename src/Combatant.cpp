@@ -5,18 +5,16 @@ Combatant::Combatant(const std::string& name)
     , m_d8(std::make_unique<Die>(8))
     , m_d6(std::make_unique<Die>(6))
     , m_name(name)
-    , m_stats()
-    , m_modifiers()
-    , m_max_health(0)
-    , m_armor_class(0)
-    , m_health(0)
-{
-    StatRolls();
-}
+    , m_stats(6, 11)
+    , m_modifiers(6, 0)
+    , m_max_health(8)
+    , m_armor_class(11)
+    , m_health(8)
+{ }
 
 uint8_t Combatant::Attack(Combatant* const target) const
 {
-    auto hit_die = m_d20->Roll(1)[0];
+    auto hit_die = m_d20->Roll(1).front();
     uint8_t damage_dice = 0;
     if (hit_die == 20)
     {
@@ -34,12 +32,13 @@ uint8_t Combatant::Attack(Combatant* const target) const
 uint8_t Combatant::Heal()
 {
     uint8_t heal_dice = Utility::SumDice(m_d8->Roll(1));
-    if (!m_health == m_max_health)
+    auto health = GetHealth();
+    if (m_health != m_max_health)
     {
         uint8_t heal_amount = heal_dice + m_modifiers[2];
         m_health = std::min(m_max_health, static_cast<uint8_t>(std::max(0, m_health + heal_amount)));
     }
-    return 0;
+    return GetHealth() - health;
 }
 
 std::string Combatant::ToString() const
@@ -80,9 +79,44 @@ void Combatant::StatRolls()
     m_health = m_max_health;
 }
 
-uint8_t Combatant::DetermineModifier(uint8_t stat) const
+bool Combatant::SetStats(const std::vector<uint8_t>& stats)
+{
+    if (stats.size() == 6)
+    {
+        m_stats.clear();
+        m_modifiers.clear();
+        for (uint8_t i = 0; i < 6; ++i)
+        {
+            m_stats.push_back(stats[i]);
+            m_modifiers.push_back(DetermineModifier(m_stats[i]));
+        }
+
+        // Set armor class assuming leather armor for now
+        m_armor_class = 11 + m_modifiers[1];
+        m_max_health = 8 + m_modifiers[2];
+        m_health = m_max_health;
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+std::vector<uint8_t> Combatant::GetStats() const
+{
+    return m_stats;
+}
+
+std::vector<int8_t> Combatant::GetModifiers() const
+{
+    return m_modifiers;
+}
+
+int8_t Combatant::DetermineModifier(uint8_t stat) const
 {    
-    if (2 < stat && stat <= 4) {
+    if (2 <= stat && stat <= 4) {
         return -4;
     } else if (4 < stat && stat <= 6) {
         return -3;
@@ -101,7 +135,7 @@ uint8_t Combatant::DetermineModifier(uint8_t stat) const
     } else if (18 < stat && stat <= 20) {
         return 4;
     } else {
-        return -999;
+        return -128;
     }    
 }
 

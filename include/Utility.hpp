@@ -26,6 +26,19 @@ public:
         return sum;
     };
 
+    static std::string StatString(const std::vector<int8_t>& stats)
+    {
+        std::string str = "";
+        str += "{ STR: " + std::to_string(stats[0]);
+        str += ", DEX: " + std::to_string(stats[1]);
+        str += ", CON: " + std::to_string(stats[2]);
+        str += ", INT: " + std::to_string(stats[3]);
+        str += ", WIS: " + std::to_string(stats[4]);
+        str += ", CHR: " + std::to_string(stats[5]);
+        str += " }";
+        return str;
+    };
+
     static std::string StatString(const std::vector<uint8_t>& stats)
     {
         std::string str = "";
