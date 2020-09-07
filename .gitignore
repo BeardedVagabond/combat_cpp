@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+# Build files
+/build
+/out
+
+# VS Code / Studio
+/.vscode
+/.vs
