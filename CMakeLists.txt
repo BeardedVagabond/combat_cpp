@@ -107,3 +107,5 @@ target_include_directories(unitTests
 target_link_libraries(unitTests
     gtest_main
 )
+
+add_test(NAME unitTests, COMMAND unitTests)
