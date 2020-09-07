@@ -92,6 +92,10 @@ add_executable(unitTests
     ${all_sources}
 )
 
+add_dependencies(unitTests
+    gtest
+)
+
 target_compile_features(unitTests
     PRIVATE
         cxx_std_17
@@ -107,3 +111,6 @@ target_include_directories(unitTests
 target_link_libraries(unitTests
     gtest_main
 )
+
+enable_testing()
+add_test(NAME unitTests, COMMAND unitTests)
