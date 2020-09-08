@@ -87,30 +87,24 @@ target_include_directories(exampleMain
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-add_executable(unitTests
-    src/unitTests.cpp
+add_executable(runAllTests
+    src/runAllTests.cpp
     ${all_sources}
 )
 
-add_dependencies(unitTests
-    gtest
-)
-
-target_compile_features(unitTests
+target_compile_features(runAllTests
     PRIVATE
         cxx_std_17
 )
 
-target_include_directories(unitTests
+target_include_directories(runAllTests
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(unitTests
+target_link_libraries(runAllTests
     gtest_main
 )
 
-enable_testing()
-add_test(NAME unitTests, COMMAND unitTests)
