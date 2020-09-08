@@ -30,7 +30,7 @@ TEST_F(CombatantTest, SustainDamageDecreasesHealth)
 {
     auto max_health = player.GetHealth();
     player.SustainDamage(max_health - 1);
-    EXPECT_LT(player.GetHealth(), max_health);
+    EXPECT_GT(player.GetHealth(), max_health);
 }
 
 TEST_F(CombatantTest, SustainDamageDecreasesCorrectAmount)
