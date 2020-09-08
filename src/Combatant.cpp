@@ -1,16 +1,22 @@
 #include "Combatant.hpp"
 
-Combatant::Combatant(const std::string& name)
+Combatant::Combatant()
     : m_d20(std::make_unique<Die>(20))
     , m_d8(std::make_unique<Die>(8))
     , m_d6(std::make_unique<Die>(6))
-    , m_name(name)
+    , m_name()
     , m_stats(6, 11)
     , m_modifiers(6, 0)
     , m_max_health(8)
     , m_armor_class(11)
     , m_health(8)
 { }
+
+Combatant::Combatant(const std::string& name)
+    : Combatant()
+{ 
+    m_name = name;
+}
 
 uint8_t Combatant::Attack(Combatant* const target) const
 {
@@ -26,7 +32,7 @@ uint8_t Combatant::Attack(Combatant* const target) const
         damage_dice = Utility::SumDice(m_d8->Roll(1));
         target->SustainDamage(damage_dice + m_modifiers[0]);
     }
-    return damage_dice;
+    return damage_dice + m_modifiers[0];
 }
 
 uint8_t Combatant::Heal()
@@ -63,8 +69,15 @@ uint8_t Combatant::GetHealth() const
     return m_health;
 }
 
+uint8_t Combatant::GetMaxHealth() const
+{
+    return m_max_health;
+}
+
 void Combatant::StatRolls()
 {
+    m_stats.clear();
+    m_modifiers.clear();
     for (uint8_t i = 0; i < 6; ++i)
     {
         std::vector<uint8_t> rolls = m_d6->Roll(4);
