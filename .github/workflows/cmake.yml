@@ -42,4 +42,4 @@ jobs:
       working-directory: ${{runner.workspace}}/build/${{env.BUILD_TYPE}}
       shell: bash
       # Execute tests defined by the unitTests.exe
-      run: ./unitTests.exe
+      run: ./runAllTests.exe
