@@ -48,9 +48,17 @@ jobs:
       run: ./runAllTests.exe
       if: matrix.os == 'windows-latest'
       
-      name: Test (Ubuntu)
+    - name: Test (Ubuntu)
       working-directory: ${{runner.workspace}}/build
       shell: bash
       # Execute tests defined by the unitTests.exe
       run: ./runAllTests
       if: matrix.os == 'ubuntu-latest'
+      
+    - name: Test (MacOS)      
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      # Execute tests defined by the unitTests.exe
+      run: ./runAllTests
+      if: matrix.os == 'ubuntu-latest'
+      
