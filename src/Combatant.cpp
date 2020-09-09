@@ -25,16 +25,15 @@ int8_t Combatant::Attack(Combatant* const target) const
     if (hit_die == 20)
     {
         damage_dice = Utility::SumDice(m_d8->Roll(2));
-        target->SustainDamage(std::clamp(damage_dice + m_modifiers[0], 0, 
-                static_cast<int>(UINT8_MAX)));
     }
     else if (hit_die >= target->m_armor_class)
     {
         damage_dice = Utility::SumDice(m_d8->Roll(1));
-        target->SustainDamage(std::clamp(damage_dice + m_modifiers[0], 0,
-            static_cast<int>(UINT8_MAX)));
     }
-    return damage_dice + m_modifiers[0];
+    auto total_damage = std::clamp(damage_dice + this->m_modifiers[0], 0,
+        static_cast<int>(UINT8_MAX));
+    target->SustainDamage(total_damage);
+    return total_damage;
 }
 
 uint8_t Combatant::Heal()
@@ -44,8 +43,8 @@ uint8_t Combatant::Heal()
     if (m_health != m_max_health)
     {
         uint8_t heal_amount = heal_dice + m_modifiers[2];
-        m_health = std::clamp(static_cast<uint8_t>(m_health + heal_amount),
-            static_cast<uint8_t>(0), m_max_health);
+        m_health = std::clamp(m_health + heal_amount, 0, 
+            static_cast<int>(m_max_health));
     }
     return GetHealth() - health;
 }
