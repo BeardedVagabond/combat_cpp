@@ -60,5 +60,5 @@ jobs:
       shell: bash
       # Execute tests defined by the unitTests.exe
       run: ./runAllTests
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'macos-latest'
       
