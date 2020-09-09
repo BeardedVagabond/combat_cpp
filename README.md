@@ -3,10 +3,9 @@
 A simple text-based console game that uses DnD5e rules for combat. This was originally implemented in Python, and now in C++ as my experience grows.
 Currently, all combatants (player and enemies) are spawned as lvl 1 Rogues wearing leather armor with randomised stats.
 
-Possible actions are: Fight, Check Health, Rest, Look Around, and Exit
-While fighting, it is only possible to attack or run away.
+Possible actions are: Fight, Check Health, Rest, Look Around, and Exit. While fighting, it is only possible to attack or run away.
 
-The game ends when all enemies are defeated, or the user chooses to exit.I hope you enjoy playing this little game! 
+The game ends when all enemies are defeated, or the user chooses to exit. I hope you enjoy playing this little game! 
 
 Want to try it out? All you need to do is clone, configure + build with CMake, and run exampleMain :D 
 It has passed build actions for windows-latest, ubuntu-latest, and macos-latest, however I have only personally tested on windows and ubuntu (in WSL for now).
