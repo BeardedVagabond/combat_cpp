@@ -12,7 +12,10 @@ jobs:
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
     # See: https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#configuring-a-build-matrix
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v2
@@ -38,8 +41,24 @@ jobs:
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build . --config $BUILD_TYPE
 
-    - name: Test
+    - name: Test (Windows)
       working-directory: ${{runner.workspace}}/build/${{env.BUILD_TYPE}}
       shell: bash
       # Execute tests defined by the unitTests.exe
       run: ./runAllTests.exe
+      if: matrix.os == 'windows-latest'
+      
+    - name: Test (Ubuntu)
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      # Execute tests defined by the unitTests.exe
+      run: ./runAllTests
+      if: matrix.os == 'ubuntu-latest'
+      
+    - name: Test (MacOS)      
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      # Execute tests defined by the unitTests.exe
+      run: ./runAllTests
+      if: matrix.os == 'macos-latest'
+      
