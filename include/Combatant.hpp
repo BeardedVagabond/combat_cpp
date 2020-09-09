@@ -13,7 +13,7 @@ public:
     Combatant();
     explicit Combatant(const std::string& name);
 
-    uint8_t Attack(Combatant* const target) const;
+    int8_t Attack(Combatant* const target) const;
 
     uint8_t Heal();
 

@@ -18,19 +18,21 @@ Combatant::Combatant(const std::string& name)
     m_name = name;
 }
 
-uint8_t Combatant::Attack(Combatant* const target) const
+int8_t Combatant::Attack(Combatant* const target) const
 {
     auto hit_die = m_d20->Roll(1).front();
-    uint8_t damage_dice = 0;
+    int8_t damage_dice = 0;
     if (hit_die == 20)
     {
         damage_dice = Utility::SumDice(m_d8->Roll(2));
-        target->SustainDamage(damage_dice + m_modifiers[0]);
+        target->SustainDamage(std::clamp(damage_dice + m_modifiers[0], 0, 
+                static_cast<int>(UINT8_MAX)));
     }
     else if (hit_die >= target->m_armor_class)
     {
         damage_dice = Utility::SumDice(m_d8->Roll(1));
-        target->SustainDamage(damage_dice + m_modifiers[0]);
+        target->SustainDamage(std::clamp(damage_dice + m_modifiers[0], 0,
+            static_cast<int>(UINT8_MAX)));
     }
     return damage_dice + m_modifiers[0];
 }
@@ -42,7 +44,8 @@ uint8_t Combatant::Heal()
     if (m_health != m_max_health)
     {
         uint8_t heal_amount = heal_dice + m_modifiers[2];
-        m_health = std::min(m_max_health, static_cast<uint8_t>(std::max(0, m_health + heal_amount)));
+        m_health = std::clamp(static_cast<uint8_t>(m_health + heal_amount),
+            static_cast<uint8_t>(0), m_max_health);
     }
     return GetHealth() - health;
 }
@@ -154,6 +157,7 @@ int8_t Combatant::DetermineModifier(uint8_t stat) const
 
 void Combatant::SustainDamage(uint8_t total_damage)
 {
-    m_health = std::min(m_max_health, static_cast<uint8_t>(std::max(0, m_health - total_damage)));
+    m_health = std::clamp(m_health - total_damage, 0, 
+        static_cast<int>(m_max_health));
 }
 
