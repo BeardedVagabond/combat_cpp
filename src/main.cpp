@@ -46,7 +46,18 @@ bool FightLoop(const uint_fast64_t& fight_turn, Combatant* const player, Combata
     }
     else if (action == "r" || action == "run")
     {
-        std::cout << "You're not getting away that easy!! Stay and fight!\n\n";
+        std::cout << "You attempt to run away from the Combat...\n";
+        if (player->RunAway(target))
+        {
+            std::cout << "Such cowardice doesn't belong in Combat anyway...\n\n";
+            return true;
+        }
+        else
+        {
+            std::cout << "You stumble trying to get away!\n"
+                << target->GetName() << " seizes the opportunity and attacks for "
+                << std::to_string(target->Attack(player)) << " damage!!\n\n";
+        }
     }
     else
     {

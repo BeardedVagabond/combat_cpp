@@ -17,6 +17,9 @@ public:
 
     uint8_t Heal();
 
+    // Note that "target" here is the current target in the fight loop
+    bool RunAway(Combatant* const target) const;
+
     std::string ToString() const;
 
     std::string GetName() const;

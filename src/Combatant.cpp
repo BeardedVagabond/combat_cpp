@@ -38,15 +38,25 @@ int8_t Combatant::Attack(Combatant* const target) const
 
 uint8_t Combatant::Heal()
 {
-    uint8_t heal_dice = Utility::SumDice(m_d8->Roll(1));
+    uint8_t heal_die = m_d8->Roll(1).front();
     auto health = GetHealth();
     if (m_health != m_max_health)
     {
-        uint8_t heal_amount = heal_dice + m_modifiers[2];
+        uint8_t heal_amount = heal_die + m_modifiers[2];
         m_health = std::clamp(m_health + heal_amount, 0, 
             static_cast<int>(m_max_health));
     }
     return GetHealth() - health;
+}
+
+bool Combatant::RunAway(Combatant* const target) const
+{
+    uint8_t run_die = m_d20->Roll(1).front();
+    if (run_die + this->m_modifiers[1] - target->m_modifiers[1] >= target->m_stats[1])
+    {
+        return true;
+    }
+    return false;
 }
 
 std::string Combatant::ToString() const
