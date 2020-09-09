@@ -10,17 +10,22 @@
 class Combatant
 {
 public:
+    Combatant();
     explicit Combatant(const std::string& name);
 
-    uint8_t Attack(Combatant* const target) const;
+    int8_t Attack(Combatant* const target) const;
 
     uint8_t Heal();
+
+    // Note that "target" here is the current target in the fight loop
+    bool RunAway(Combatant* const target) const;
 
     std::string ToString() const;
 
     std::string GetName() const;
 
     uint8_t GetHealth() const;
+    uint8_t GetMaxHealth() const;
 
     // Chooses sum of the best three rolls from 4d6 for each stat
     void StatRolls();
