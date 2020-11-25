@@ -18,26 +18,29 @@ Combatant::Combatant(const std::string& name)
     m_name = name;
 }
 
-int8_t Combatant::Attack(Combatant* const target) const
+std::pair<Utility::RollStatus, int8_t> Combatant::Attack(Combatant* const target) const
 {
     auto hit_die = m_d20->Roll(1).front();
     int8_t damage_dice = 0;
+    Utility::RollStatus roll_status;
     if (hit_die == 20)
     {
         damage_dice = Utility::SumDice(m_d8->Roll(2));
+        roll_status = Utility::RollStatus::Critical;
     }
     else if (hit_die == 1)
     {
-        return 0;
+        return { Utility::RollStatus::Failed, 0 };
     }
     else if (hit_die >= target->m_armor_class)
     {
         damage_dice = Utility::SumDice(m_d8->Roll(1));
+        roll_status = Utility::RollStatus::Success;
     }
     auto total_damage = std::clamp(damage_dice + this->m_modifiers[0], 0,
         static_cast<int>(UINT8_MAX));
     target->SustainDamage(total_damage);
-    return total_damage;
+    return { roll_status, total_damage };
 }
 
 uint8_t Combatant::Heal()

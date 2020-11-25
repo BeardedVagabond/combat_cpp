@@ -14,7 +14,7 @@ public:
     Combatant();
     explicit Combatant(const std::string& name);
 
-    int8_t Attack(Combatant* const target) const;
+    std::pair<Utility::RollStatus, int8_t> Attack(Combatant* const target) const;
 
     uint8_t Heal();
 

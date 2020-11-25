@@ -20,7 +20,6 @@ void ConditionStringInPlace(std::string& str, bool remove_whitespace, bool to_lo
             c = std::tolower(c);
         }
     }
-
 }
 
 bool FeintCheck(Combatant* const target)
@@ -31,6 +30,26 @@ bool FeintCheck(Combatant* const target)
         return true;
     }
     return false;
+}
+
+void AttackCheck(Combatant* const attacker, Combatant* const target)
+{
+    auto attack_result = attacker->Attack(target);
+
+    if ((attack_result.first == Utility::RollStatus::Failed))
+    {
+        std::cout << "Looks like " << attacker->GetName()
+            << " completely missed!!\n\n";
+    }
+    else
+    {
+        if (attack_result.first == Utility::RollStatus::Critical)
+        {
+            std::cout << "CRITICAL HIT!!\n";
+        }
+        std::cout << attacker->GetName() << " attacks and manages to inflict "
+            << std::to_string(attack_result.second) << " damage to " << target->GetName() << "\n\n";
+    }
 }
 
 // Returns true when fight is completed
@@ -50,8 +69,7 @@ bool CombatLoop(const uint_fast64_t& fight_round, Combatant* const player, Comba
 
     if (!has_initiative)
     {
-        std::cout << target->GetName() << " attacks and manages to inflict "
-            << std::to_string(target->Attack(player)) << " damage to " << player->GetName() << "\n\n";
+        AttackCheck(target, player);
         if (FeintCheck(player))
         {
             return true;
@@ -60,8 +78,7 @@ bool CombatLoop(const uint_fast64_t& fight_round, Combatant* const player, Comba
 
     if (action == "a" || action == "attack")
     {
-        std::cout << "You swing forth with all your might and manage to inflict "
-            << std::to_string(player->Attack(target)) << " damage to " << target->GetName() << "\n";
+        AttackCheck(player, target);
         if (FeintCheck(target))
         {
             return true;
@@ -69,8 +86,7 @@ bool CombatLoop(const uint_fast64_t& fight_round, Combatant* const player, Comba
 
         if (has_initiative)
         {
-            std::cout << "They return the favor and manage to inflict "
-                << std::to_string(target->Attack(player)) << " damage to " << player->GetName() << "\n\n";
+            AttackCheck(target, player);
             if (FeintCheck(player))
             {
                 return true;
@@ -88,8 +104,8 @@ bool CombatLoop(const uint_fast64_t& fight_round, Combatant* const player, Comba
         else
         {
             std::cout << "You stumble trying to get away!\n"
-                << target->GetName() << " seizes the opportunity and attacks for "
-                << std::to_string(target->Attack(player)) << " damage!!\n\n";
+                << target->GetName() << " seizes the opportunity and attacks...\n";
+            AttackCheck(target, player);
             if (FeintCheck(player))
             {
                 return true;
@@ -99,8 +115,8 @@ bool CombatLoop(const uint_fast64_t& fight_round, Combatant* const player, Comba
     else
     {
         std::cout << "You stumble having distracted yourself from only two options...\n"
-            << target->GetName() << " seizes the opportunity and attacks for "
-            << std::to_string(target->Attack(player)) << " damage!!\n\n";
+            << target->GetName() << " seizes the opportunity and attacks...\n";
+        AttackCheck(target, player);
         if (FeintCheck(player))
         {
             return true;
@@ -136,9 +152,8 @@ bool GameLoop(const uint_fast64_t& game_step, const std::string& player_key, Com
         if (target == player_key)
         {
             std::cout << "You know what... sure. Go for it...\n";
-            std::cout << "You manage to self inflict "
-                << std::to_string(player->Attack(combatants[player_key].get()))
-                << " damage... nice one...\n\n";
+            AttackCheck(player, player);
+            std::cout << "Nice one...\n\n";
         }
         else if (combatants.find(target) != combatants.end())
         {
