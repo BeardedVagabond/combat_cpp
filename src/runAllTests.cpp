@@ -142,6 +142,6 @@ TEST_F(CombatantTest, SetStatsChangesStatsAndModifiers)
 TEST_F(CombatantTest, AttackDoesDamage)
 {
     auto max_health = enemy.GetHealth();
-    while (player.Attack(&enemy) == 0);
+    while (player.Attack(&enemy).second == 0);
     EXPECT_LT(enemy.GetHealth(), max_health);
 }
