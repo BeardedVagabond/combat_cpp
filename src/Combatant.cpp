@@ -63,6 +63,12 @@ bool Combatant::RunAway(Combatant* const target) const
     return false;
 }
 
+uint8_t Combatant::StatCheck(Utility::Stats stat)
+{
+    uint8_t index = static_cast<int>(stat);
+    return m_d20->Roll(1)[0] + m_stats[index];
+}
+
 std::string Combatant::ToString() const
 {
     std::string str = "";

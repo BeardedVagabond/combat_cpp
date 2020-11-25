@@ -21,6 +21,8 @@ public:
     // Note that "target" here is the current target in the fight loop
     bool RunAway(Combatant* const target) const;
 
+    uint8_t StatCheck(Utility::Stats stat);
+
     std::string ToString() const;
 
     std::string GetName() const;

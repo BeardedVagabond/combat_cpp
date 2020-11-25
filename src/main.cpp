@@ -23,11 +23,21 @@ void ConditionStringInPlace(std::string& str, bool remove_whitespace, bool to_lo
 
 }
 
+bool FeintCheck(Combatant* const target)
+{
+    if (target->GetHealth() == 0)
+    {
+        std::cout << target->GetName() << " has feinted!\n";
+        return true;
+    }
+    return false;
+}
+
 // Returns true when fight is completed
-bool FightLoop(const uint_fast64_t& fight_turn, Combatant* const player, Combatant* const target)
+bool CombatLoop(const uint_fast64_t& fight_round, Combatant* const player, Combatant* const target, const bool has_initiative)
 {
     std::string action;
-    std::cout << "Combat Turn " << std::to_string(fight_turn) << "...\n";
+    std::cout << "Combat Round " << std::to_string(fight_round) << "...\n";
     std::cout << player->GetName() << " " << std::to_string(player->GetHealth())
         << "/" << std::to_string(player->GetMaxHealth()) << " health\n";
     std::cout << target->GetName() << " " << std::to_string(target->GetHealth())
@@ -38,12 +48,34 @@ bool FightLoop(const uint_fast64_t& fight_turn, Combatant* const player, Combata
 
     ConditionStringInPlace(action, true, true);
 
+    if (!has_initiative)
+    {
+        std::cout << target->GetName() << " attacks and manages to inflict "
+            << std::to_string(target->Attack(player)) << " damage to " << player->GetName() << "\n\n";
+        if (FeintCheck(player))
+        {
+            return true;
+        }
+    }
+
     if (action == "a" || action == "attack")
     {
         std::cout << "You swing forth with all your might and manage to inflict "
             << std::to_string(player->Attack(target)) << " damage to " << target->GetName() << "\n";
-        std::cout << "They return the favor and manage to inflict "
-            << std::to_string(target->Attack(player)) << " damage to " << player->GetName() << "\n\n";
+        if (FeintCheck(target))
+        {
+            return true;
+        }
+
+        if (has_initiative)
+        {
+            std::cout << "They return the favor and manage to inflict "
+                << std::to_string(target->Attack(player)) << " damage to " << player->GetName() << "\n\n";
+            if (FeintCheck(player))
+            {
+                return true;
+            }
+        }        
     }
     else if (action == "r" || action == "run")
     {
@@ -58,6 +90,10 @@ bool FightLoop(const uint_fast64_t& fight_turn, Combatant* const player, Combata
             std::cout << "You stumble trying to get away!\n"
                 << target->GetName() << " seizes the opportunity and attacks for "
                 << std::to_string(target->Attack(player)) << " damage!!\n\n";
+            if (FeintCheck(player))
+            {
+                return true;
+            }
         }
     }
     else
@@ -65,25 +101,17 @@ bool FightLoop(const uint_fast64_t& fight_turn, Combatant* const player, Combata
         std::cout << "You stumble having distracted yourself from only two options...\n"
             << target->GetName() << " seizes the opportunity and attacks for "
             << std::to_string(target->Attack(player)) << " damage!!\n\n";
-    }
-
-    if (player->GetHealth() == 0)
-    {
-        std::cout << player->GetName() << " has feinted!\n";
-        return true;
-    }
-
-    if (target->GetHealth() == 0)
-    {
-        std::cout << target->GetName() << " has feinted!\n";
-        return true;
+        if (FeintCheck(player))
+        {
+            return true;
+        }
     }
 
     return false;
 }
 
 // Returns true when game should close
-bool GameLoop(const uint_fast64_t& game_step, const std::string& player_key, std::unordered_map<std::string, std::unique_ptr<Combatant>>& combatants)
+bool GameLoop(const uint_fast64_t& game_step, const std::string& player_key, Combatant* const player, std::unordered_map<std::string, std::unique_ptr<Combatant>>& combatants)
 {
     std::string action;
     std::cout << "Turn " << std::to_string(game_step) << "...\n";
@@ -94,7 +122,7 @@ bool GameLoop(const uint_fast64_t& game_step, const std::string& player_key, std
 
     if (action == "f" || action == "fight")
     {
-        if (combatants[player_key]->GetHealth() == 0)
+        if (player->GetHealth() == 0)
         {
             std::cout << "You're far from ready for Combat. Go visit the bonfire or leave us...\n\n";
             return false;
@@ -109,15 +137,25 @@ bool GameLoop(const uint_fast64_t& game_step, const std::string& player_key, std
         {
             std::cout << "You know what... sure. Go for it...\n";
             std::cout << "You manage to self inflict "
-                << std::to_string(combatants[player_key]->Attack(combatants[player_key].get()))
+                << std::to_string(player->Attack(combatants[player_key].get()))
                 << " damage... nice one...\n\n";
         }
         else if (combatants.find(target) != combatants.end())
         {
+            Combatant* target_ptr = combatants[target].get();
             std::cout << "You step towards " << target << " and prepare for Combat!\n\n";
             uint_fast64_t fight_turn = 0;
-            while (!FightLoop(++fight_turn, combatants[player_key].get(), combatants[target].get()));
-            if (combatants[target]->GetHealth() == 0)
+            bool player_initiative = player->StatCheck(Utility::Stats::DEX) > target_ptr->StatCheck(Utility::Stats::DEX);
+            if (player_initiative)
+            {
+                std::cout << player->GetName() << " has the initiative!\n";
+            }
+            else
+            {
+                std::cout << target_ptr->GetName() << " has the initiative!\n";
+            }
+            while (!CombatLoop(++fight_turn, player, target_ptr, player_initiative));
+            if (target_ptr->GetHealth() == 0)
             {
                 std::cout << "Looks like " << target << " will be leaving Combat quite differently than they entered...\n\n";
                 combatants.erase(target);
@@ -129,7 +167,7 @@ bool GameLoop(const uint_fast64_t& game_step, const std::string& player_key, std
                 << "Maybe look around and try again\n\n";
         }
         
-        if (combatants[player_key]->GetHealth() == 0)
+        if (player->GetHealth() == 0)
         {
             std::cout << "That bonfire is looking pretty nice now isn't it?...\n\n";
         }
@@ -138,13 +176,13 @@ bool GameLoop(const uint_fast64_t& game_step, const std::string& player_key, std
     {
         std::cout << "Well then I guess you DO have time to bleed...\n\n";
         std::cout << "You check your wounds and determine your health is " 
-            << std::to_string(combatants[player_key]->GetHealth())
+            << std::to_string(player->GetHealth())
             << "/" << std::to_string(combatants[player_key]->GetMaxHealth())
             << "\n\n";
     }
     else if (action == "r" || action == "rest")
     {
-        if (combatants[player_key]->GetHealth() == combatants[player_key]->GetMaxHealth())
+        if (player->GetHealth() == player->GetMaxHealth())
         {
             std::cout << "I know the fire is nice and warm... but let's get back to why you're here...\n\n";
             return false;
@@ -221,7 +259,7 @@ int main()
         
     // Start main game loop (returns true when complete)
     uint_fast64_t step = 0;
-    while (!GameLoop(++step, player_key, combatants));
+    while (!GameLoop(++step, player_key, combatants[player_key].get(), combatants));
 
     return 0;
 }
