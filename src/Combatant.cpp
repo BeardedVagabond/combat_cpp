@@ -26,6 +26,10 @@ int8_t Combatant::Attack(Combatant* const target) const
     {
         damage_dice = Utility::SumDice(m_d8->Roll(2));
     }
+    else if (hit_die == 1)
+    {
+        return 0;
+    }
     else if (hit_die >= target->m_armor_class)
     {
         damage_dice = Utility::SumDice(m_d8->Roll(1));
