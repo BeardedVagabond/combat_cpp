@@ -48,6 +48,7 @@ private:
     std::unique_ptr<Die> m_d20;
     std::unique_ptr<Die> m_d8;
     std::unique_ptr<Die> m_d6;
+    std::unique_ptr<Die> m_damage_die;
     std::string m_name;
     Utility::Classes m_class_type;
     std::vector<uint8_t> m_stats;
