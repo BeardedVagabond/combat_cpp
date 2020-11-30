@@ -5,6 +5,7 @@ Combatant::Combatant()
     , m_d8(std::make_unique<Die>(8))
     , m_d6(std::make_unique<Die>(6))
     , m_name()
+    , m_class_type()
     , m_stats(6, 11)
     , m_modifiers(6, 0)
     , m_max_health(8)
@@ -12,10 +13,11 @@ Combatant::Combatant()
     , m_health(8)
 { }
 
-Combatant::Combatant(const std::string& name)
+Combatant::Combatant(const std::string& name, const Utility::Classes class_type)
     : Combatant()
 { 
     m_name = name;
+    m_class_type = class_type;
 }
 
 std::pair<Utility::RollStatus, int8_t> Combatant::Attack(Combatant* const target) const
@@ -76,11 +78,12 @@ std::string Combatant::ToString() const
 {
     std::string str = "";
     str += m_name + ":";
+    str += "\n  -> Class: " + Utility::ClassString(m_class_type);
     str += "\n  -> HP: " + std::to_string(m_health) + " / ";
     str += std::to_string(m_max_health);
-    str += "\n  -> stats: " + Utility::StatString(m_stats);
-    str += "\n  -> modifiers: " + Utility::StatString(m_modifiers);
-    str += "\n  -> armor class: " + std::to_string(m_armor_class);
+    str += "\n  -> Stats: " + Utility::StatString(m_stats);
+    str += "\n  -> Modifiers: " + Utility::StatString(m_modifiers);
+    str += "\n  -> Armor Class: " + std::to_string(m_armor_class);
     return str;
 }
 

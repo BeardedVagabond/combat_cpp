@@ -261,9 +261,9 @@ int main()
     std::unordered_map<std::string, std::unique_ptr<Combatant>> combatants;
     std::string player_key = player_name;
     ConditionStringInPlace(player_key, true, true);
-    combatants[player_key] = std::make_unique<Combatant>(player_name);
-    combatants["baki"] = std::make_unique<Combatant>("Baki");
-    combatants["ohma"] = std::make_unique<Combatant>("Ohma");
+    combatants[player_key] = std::make_unique<Combatant>(player_name, Utility::Classes::Rogue);
+    combatants["baki"] = std::make_unique<Combatant>("Baki", Utility::Classes::Fighter);
+    combatants["ohma"] = std::make_unique<Combatant>("Ohma", Utility::Classes::Fighter);
 
     // Generate stats and display all combatants
     std::cout << "The members of this Combat are...\n";

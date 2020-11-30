@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <unordered_map>
+
 #include <cstdint>
 
 class Utility
@@ -25,6 +27,55 @@ public:
         WIS,
         CHR
     };
+
+    enum class Classes
+    {
+        Barbarian,
+        Bard,
+        Cleric,
+        Druid,
+        Fighter,
+        Monk,
+        Paladin,
+        Ranger,
+        Rogue,
+        Sorcerer,
+        Warlock,
+        Wizard,
+    };
+
+    static std::string ClassString(Classes class_type)
+    {
+        switch (class_type)
+        {
+        case Classes::Barbarian:
+            return "Barbarian";
+        case Classes::Bard:
+            return "Bard";
+        case Classes::Cleric:
+            return "Cleric";
+        case Classes::Druid:
+            return "Druid";
+        case Classes::Fighter:
+            return "Fighter";
+        case Classes::Monk:
+            return "Monk";
+        case Classes::Paladin:
+            return "Paladin";
+        case Classes::Ranger:
+            return "Ranger";
+        case Classes::Rogue:
+            return "Rogue";
+        case Classes::Sorcerer:
+            return "Sorcerer";
+        case Classes::Warlock:
+            return "Warlock";
+        case Classes::Wizard:
+            return "Wizard";
+        default:
+            return "Unkown?";
+        }
+    }
 
     static uint8_t SumDice(const std::vector<uint8_t>& dice)
     {
