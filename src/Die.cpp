@@ -1,25 +1,25 @@
 #include "Die.hpp"
 
 Die::Die(uint8_t num_sides)
-    : m_sides(num_sides)
-    , m_rand_dev()
-    , m_rand_eng(m_rand_dev())
+    : sides_(num_sides)
+    , rand_dev_()
+    , rand_eng_(rand_dev_())
 {
 }
 
 std::vector<uint8_t> Die::Roll(uint8_t num_rolls)
 {
-    std::uniform_int_distribution<std::mt19937::result_type> dist(1, m_sides);
+    std::uniform_int_distribution<std::mt19937::result_type> dist(1, sides_);
     std::vector<uint8_t> results;
     results.reserve(num_rolls);
     for (int i = 0; i < num_rolls; ++i)
     {
-        results.push_back(dist(m_rand_eng));
+        results.push_back(dist(rand_eng_));
     }
     return results;
 }
 
 std::string Die::ToString() const
 {
-    return "A " + std::to_string(m_sides) + " sided die.";
+    return "A " + std::to_string(sides_) + " sided die.";
 }

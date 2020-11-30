@@ -6,24 +6,15 @@ class CombatantTest : public testing::Test
 {
 protected:
     Combatant player{ "player", Utility::Classes::Rogue };
-    Combatant enemy{ "enemy", Utility::Classes::Rogue };
+    Combatant enemy{ "enemy", Utility::Classes::Fighter };
 };
 
 TEST_F(CombatantTest, Constructor)
 {
     ASSERT_STREQ(player.GetName().c_str(), "player");
+    ASSERT_STREQ(player.GetClass().c_str(), "Rogue");
     ASSERT_STREQ(enemy.GetName().c_str(), "enemy");
-
-    auto default_stats = player.GetStats();
-    auto default_modifiers = player.GetModifiers();
-    auto default_max_health = player.GetHealth();
-
-    for (uint8_t i = 0; i < 6; ++i)
-    {
-        ASSERT_EQ(default_stats[i], 11);
-        ASSERT_EQ(default_modifiers[i], 0);
-    }
-    ASSERT_EQ(default_max_health, 8);
+    ASSERT_STREQ(enemy.GetClass().c_str(), "Fighter");
 }
 
 TEST_F(CombatantTest, SustainDamageDecreasesHealth)
@@ -90,17 +81,27 @@ TEST_F(CombatantTest, DetermineModifierReturnsProperValuesForValidRange)
     std::vector<int8_t> calulated_modifiers;
     for (uint8_t i = 2; i <= 20; ++i)
     {
-        calulated_modifiers.push_back(player.DetermineModifier(i));
+        calulated_modifiers.push_back(Utility::DetermineModifier(i));
         ASSERT_EQ(calulated_modifiers[i-2], expected_modifiers[i-2]);
     }
 }
 
 TEST_F(CombatantTest, DetermineModifiersReturnsINT8_MINOutOfRange)
 {
-    ASSERT_EQ(player.DetermineModifier(100), INT8_MIN);
-    ASSERT_EQ(player.DetermineModifier(0), INT8_MIN);
+    ASSERT_EQ(Utility::DetermineModifier(100), INT8_MIN);
+    ASSERT_EQ(Utility::DetermineModifier(0), INT8_MIN);
 }
 
+// NOTE: this test is a little weird as attack is a random action
+TEST_F(CombatantTest, AttackDoesDamage)
+{
+    auto max_health = enemy.GetHealth();
+    while (player.Attack(&enemy).second == 0);
+    EXPECT_LT(enemy.GetHealth(), max_health);
+}
+
+// LEGACY TESTS
+/* 
 TEST_F(CombatantTest, SetStatsChangesStatsAndModifiers)
 {
     auto default_stats = player.GetStats();
@@ -137,11 +138,4 @@ TEST_F(CombatantTest, SetStatsChangesStatsAndModifiers)
         ASSERT_LT(new_modifiers[i], default_modifiers[i]);
     }
 }
-
-// NOTE: this test is a little weird as attack is a random action
-TEST_F(CombatantTest, AttackDoesDamage)
-{
-    auto max_health = enemy.GetHealth();
-    while (player.Attack(&enemy).second == 0);
-    EXPECT_LT(enemy.GetHealth(), max_health);
-}
+*/

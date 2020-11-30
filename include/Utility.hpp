@@ -8,9 +8,8 @@
 
 #include <cstdint>
 
-class Utility
+namespace Utility
 {
-public:
     enum class RollStatus
     {
         Failed,
@@ -44,98 +43,18 @@ public:
         Wizard,
     };   
 
-    static std::string ClassString(Classes class_type)
-    {
-        std::unordered_map<Classes, std::string> map
-        {
-            {Classes::Barbarian, "Barbarian"},
-            {Classes::Bard, "Bard"},
-            {Classes::Cleric, "Cleric"},
-            {Classes::Druid, "Druid"},
-            {Classes::Fighter, "Fighter"},
-            {Classes::Monk, "Monk"},
-            {Classes::Paladin, "Paladin"},
-            {Classes::Ranger, "Ranger"},
-            {Classes::Rogue, "Rogue"},
-            {Classes::Sorcerer, "Sorcerer"},
-            {Classes::Warlock, "Warlock"},
-            {Classes::Wizard, "Wizard"},
-        };
-
-        if (map.find(class_type) != map.end())
-        {
-            return map[class_type];
-        }
-        else
-        {
-            return "Unknown";
-        }
-    }
+    std::string ClassString(Classes class_type);
 
     // NOTE: Defaults to a rogue if str not found
-    static Classes StringToClass(std::string str)
-    {
-        std::unordered_map<std::string, Classes> map
-        {
-            {"barbarian", Classes::Barbarian},
-            {"bard", Classes::Bard},
-            {"cleric", Classes::Cleric},
-            {"druid", Classes::Druid},
-            {"fighter", Classes::Fighter},
-            {"monk", Classes::Monk},
-            {"paladin", Classes::Paladin},
-            {"ranger", Classes::Ranger},
-            {"rogue", Classes::Rogue},
-            {"sorcerer", Classes::Sorcerer},
-            {"warlock", Classes::Warlock},
-            {"wizard", Classes::Wizard},
-        };
+    Classes StringToClass(std::string str);
 
-        if (map.find(str) != map.end())
-        {
-            return map[str];
-        }
-        else
-        {
-            return Utility::Classes::Rogue;
-        }
-    }
+    uint8_t SumDice(const std::vector<uint8_t>& dice);
 
-    static uint8_t SumDice(const std::vector<uint8_t>& dice)
-    {
-        uint8_t sum = 0;
-        for (uint8_t die : dice)
-        {
-            sum += die;
-        }
-        return sum;
-    };
+    std::string StatString(const std::unordered_map<Stats, int8_t>& stats);
 
-    static std::string StatString(const std::vector<int8_t>& stats)
-    {
-        std::string str = "";
-        str += "{ STR: " + std::to_string(stats[0]);
-        str += ", DEX: " + std::to_string(stats[1]);
-        str += ", CON: " + std::to_string(stats[2]);
-        str += ", INT: " + std::to_string(stats[3]);
-        str += ", WIS: " + std::to_string(stats[4]);
-        str += ", CHR: " + std::to_string(stats[5]);
-        str += " }";
-        return str;
-    };
+    std::string StatString(const std::unordered_map<Stats, uint8_t>& stats);
 
-    static std::string StatString(const std::vector<uint8_t>& stats)
-    {
-        std::string str = "";
-        str += "{ STR: " + std::to_string(stats[0]);
-        str += ", DEX: " + std::to_string(stats[1]);
-        str += ", CON: " + std::to_string(stats[2]);
-        str += ", INT: " + std::to_string(stats[3]);
-        str += ", WIS: " + std::to_string(stats[4]);
-        str += ", CHR: " + std::to_string(stats[5]);
-        str += " }";
-        return str;
-    };
+    int8_t DetermineModifier(uint8_t stat);
 };
 
 #endif // !COMBAT_CPP_UTILITY_HPP_
