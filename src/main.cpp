@@ -53,7 +53,7 @@ void AttackCheck(Combatant* const attacker, Combatant* const target)
 }
 
 // Returns true when fight is completed
-bool CombatLoop(const uint_fast64_t& fight_round, Combatant* const player, Combatant* const target, const bool has_initiative)
+bool CombatLoop(const uint_fast64_t& fight_round, Combatant* const player, Combatant* const target, const uint8_t player_initiative)
 {
     std::string action;
     std::cout << "Combat Round " << std::to_string(fight_round) << "...\n";
@@ -61,67 +61,66 @@ bool CombatLoop(const uint_fast64_t& fight_round, Combatant* const player, Comba
         << "/" << std::to_string(player->GetMaxHealth()) << " health\n";
     std::cout << target->GetName() << " " << std::to_string(target->GetHealth())
         << "/" << std::to_string(target->GetMaxHealth()) << " health\n";
-    std::cout << "Do you wish to [A]ttack, or [R]un? |> ";
-    std::getline(std::cin, action);
-    std::cout << "\n";
 
-    ConditionStringInPlace(action, true, true);
-
-    if (!has_initiative)
+    // NOTE: this is a placeholder for future use in multiple opponent combat
+    uint8_t num_combatants = 2;
+    for (int i = 0; i < num_combatants; ++i)
     {
-        AttackCheck(target, player);
-        if (FeintCheck(player))
+        if (i == player_initiative)
         {
-            return true;
-        }
-    }
+            std::cout << "Do you wish to [A]ttack, or [R]un? |> ";
+            std::getline(std::cin, action);
+            std::cout << "\n";
 
-    if (action == "a" || action == "attack")
-    {
-        AttackCheck(player, target);
-        if (FeintCheck(target))
-        {
-            return true;
-        }
+            ConditionStringInPlace(action, true, true);
 
-        if (has_initiative)
-        {
-            AttackCheck(target, player);
-            if (FeintCheck(player))
+            if (action == "a" || action == "attack")
             {
-                return true;
+                AttackCheck(player, target);
+                if (FeintCheck(target))
+                {
+                    return true;
+                }
             }
-        }        
-    }
-    else if (action == "r" || action == "run")
-    {
-        std::cout << "You attempt to run away from the Combat...\n";
-        if (player->RunAway(target))
-        {
-            std::cout << "Such cowardice doesn't belong in Combat anyway...\n\n";
-            return true;
+            else if (action == "r" || action == "run")
+            {
+                std::cout << "You attempt to run away from the Combat...\n";
+                if (player->RunAway(target))
+                {
+                    std::cout << "Such cowardice doesn't belong in Combat anyway...\n\n";
+                    return true;
+                }
+                else
+                {
+                    std::cout << "You stumble trying to get away!\n"
+                        << target->GetName() << " seizes the opportunity and attacks...\n";
+                    AttackCheck(target, player);
+                    if (FeintCheck(player))
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                std::cout << "You stumble having distracted yourself from only two options...\n"
+                    << target->GetName() << " seizes the opportunity and attacks...\n";
+                AttackCheck(target, player);
+                if (FeintCheck(player))
+                {
+                    return true;
+                }
+            }
         }
         else
         {
-            std::cout << "You stumble trying to get away!\n"
-                << target->GetName() << " seizes the opportunity and attacks...\n";
             AttackCheck(target, player);
             if (FeintCheck(player))
             {
                 return true;
             }
         }
-    }
-    else
-    {
-        std::cout << "You stumble having distracted yourself from only two options...\n"
-            << target->GetName() << " seizes the opportunity and attacks...\n";
-        AttackCheck(target, player);
-        if (FeintCheck(player))
-        {
-            return true;
-        }
-    }
+    }   
 
     return false;
 }
@@ -160,8 +159,10 @@ bool GameLoop(const uint_fast64_t& game_step, const std::string& player_key, Com
             Combatant* target_ptr = combatants[target].get();
             std::cout << "You step towards " << target << " and prepare for Combat!\n\n";
             uint_fast64_t fight_turn = 0;
-            bool player_initiative = player->StatCheck(Utility::Stats::DEX) > target_ptr->StatCheck(Utility::Stats::DEX);
-            if (player_initiative)
+
+            // NOTE: This will be reafactored in future multiple opponent combat
+            uint8_t player_initiative = (player->StatCheck(Utility::Stats::DEX) > target_ptr->StatCheck(Utility::Stats::DEX)) ? 1 : 0;
+            if (player_initiative == 0)
             {
                 std::cout << player->GetName() << " has the initiative!\n";
             }
