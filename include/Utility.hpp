@@ -42,38 +42,62 @@ public:
         Sorcerer,
         Warlock,
         Wizard,
-    };
+    };   
 
     static std::string ClassString(Classes class_type)
     {
-        switch (class_type)
+        std::unordered_map<Classes, std::string> map
         {
-        case Classes::Barbarian:
-            return "Barbarian";
-        case Classes::Bard:
-            return "Bard";
-        case Classes::Cleric:
-            return "Cleric";
-        case Classes::Druid:
-            return "Druid";
-        case Classes::Fighter:
-            return "Fighter";
-        case Classes::Monk:
-            return "Monk";
-        case Classes::Paladin:
-            return "Paladin";
-        case Classes::Ranger:
-            return "Ranger";
-        case Classes::Rogue:
-            return "Rogue";
-        case Classes::Sorcerer:
-            return "Sorcerer";
-        case Classes::Warlock:
-            return "Warlock";
-        case Classes::Wizard:
-            return "Wizard";
-        default:
-            return "Unkown?";
+            {Classes::Barbarian, "Barbarian"},
+            {Classes::Bard, "Bard"},
+            {Classes::Cleric, "Cleric"},
+            {Classes::Druid, "Druid"},
+            {Classes::Fighter, "Fighter"},
+            {Classes::Monk, "Monk"},
+            {Classes::Paladin, "Paladin"},
+            {Classes::Ranger, "Ranger"},
+            {Classes::Rogue, "Rogue"},
+            {Classes::Sorcerer, "Sorcerer"},
+            {Classes::Warlock, "Warlock"},
+            {Classes::Wizard, "Wizard"},
+        };
+
+        if (map.find(class_type) != map.end())
+        {
+            return map[class_type];
+        }
+        else
+        {
+            return "Unknown";
+        }
+    }
+
+    // NOTE: Defaults to a rogue if str not found
+    static Classes StringToClass(std::string str)
+    {
+        std::unordered_map<std::string, Classes> map
+        {
+            {"barbarian", Classes::Barbarian},
+            {"bard", Classes::Bard},
+            {"cleric", Classes::Cleric},
+            {"druid", Classes::Druid},
+            {"fighter", Classes::Fighter},
+            {"monk", Classes::Monk},
+            {"paladin", Classes::Paladin},
+            {"ranger", Classes::Ranger},
+            {"rogue", Classes::Rogue},
+            {"sorcerer", Classes::Sorcerer},
+            {"warlock", Classes::Warlock},
+            {"wizard", Classes::Wizard},
+        };
+
+        if (map.find(str) != map.end())
+        {
+            return map[str];
+        }
+        else
+        {
+            return Utility::Classes::Rogue;
         }
     }
 

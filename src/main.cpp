@@ -207,7 +207,7 @@ bool GameLoop(const uint_fast64_t& game_step, const std::string& player_key, Com
         std::cout << "Let me guess... You'd prefer a bigger bonfire?\n\n";
         for (auto i = combatants.begin(); i != combatants.end(); ++i)
         {
-            std::cout << i->first << " heals for " << std::to_string(i->second->Heal()) << "\n";
+            std::cout << i->second->GetName() << " heals for " << std::to_string(i->second->Heal()) << "\n";
         }
         std::cout << "\n";
     }
@@ -252,16 +252,23 @@ int main()
     std::cout << "========================================\n\n";
 
     // Get player name
-    std::string player_name;
     std::cout << "Who will join the Combat...? |> ";
+    std::string player_name;
     std::getline(std::cin, player_name);
+    std::cout << "(Available classes: Barbarian, Bard, Cleric, Druid, "
+        << "Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, Wizard)\n";
+    std::cout << "NOTE: This currently only affects your damage die and max health!\n";
+    std::cout << "I heard your enemies will be fighters... but what class do you fall under...? |>";
+    std::string player_class;
+    std::getline(std::cin, player_class);
+    ConditionStringInPlace(player_class, true, true);
     std::cout << "I applaud your bravery, " << player_name << "\n\n";
 
     // Populate map with combatants
     std::unordered_map<std::string, std::unique_ptr<Combatant>> combatants;
     std::string player_key = player_name;
     ConditionStringInPlace(player_key, true, true);
-    combatants[player_key] = std::make_unique<Combatant>(player_name, Utility::Classes::Rogue);
+    combatants[player_key] = std::make_unique<Combatant>(player_name, Utility::StringToClass(player_class));
     combatants["baki"] = std::make_unique<Combatant>("Baki", Utility::Classes::Fighter);
     combatants["ohma"] = std::make_unique<Combatant>("Ohma", Utility::Classes::Fighter);
 
