@@ -205,9 +205,11 @@ bool GameLoop(const uint_fast64_t& game_step, const std::string& player_key, Com
         }
 
         std::cout << "Let me guess... You'd prefer a bigger bonfire?\n\n";
+        // NOTE: Combatants currently use ALL hit dice to rest ALL THE TIME
+        // TODO: Update this once leveling is implemented as it doesn't matter at lvl 1
         for (auto i = combatants.begin(); i != combatants.end(); ++i)
         {
-            std::cout << i->second->GetName() << " heals for " << std::to_string(i->second->Heal()) << "\n";
+            std::cout << i->second->GetName() << " heals for " << std::to_string(i->second->Heal(-1)) << "\n";
         }
         std::cout << "\n";
     }
@@ -257,7 +259,7 @@ int main()
     std::getline(std::cin, player_name);
     std::cout << "(Available classes: Barbarian, Bard, Cleric, Druid, "
         << "Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, Wizard)\n";
-    std::cout << "NOTE: This currently only affects your damage die and max health!\n";
+    std::cout << "NOTE: This currently only affects your hit die and max health!\n";
     std::cout << "I heard your enemies will be fighters... but what class do you fall under...? |>";
     std::string player_class;
     std::getline(std::cin, player_class);
