@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <unordered_map>
+
 #include <cstdint>
 
 class Utility
@@ -25,6 +27,79 @@ public:
         WIS,
         CHR
     };
+
+    enum class Classes
+    {
+        Barbarian,
+        Bard,
+        Cleric,
+        Druid,
+        Fighter,
+        Monk,
+        Paladin,
+        Ranger,
+        Rogue,
+        Sorcerer,
+        Warlock,
+        Wizard,
+    };   
+
+    static std::string ClassString(Classes class_type)
+    {
+        std::unordered_map<Classes, std::string> map
+        {
+            {Classes::Barbarian, "Barbarian"},
+            {Classes::Bard, "Bard"},
+            {Classes::Cleric, "Cleric"},
+            {Classes::Druid, "Druid"},
+            {Classes::Fighter, "Fighter"},
+            {Classes::Monk, "Monk"},
+            {Classes::Paladin, "Paladin"},
+            {Classes::Ranger, "Ranger"},
+            {Classes::Rogue, "Rogue"},
+            {Classes::Sorcerer, "Sorcerer"},
+            {Classes::Warlock, "Warlock"},
+            {Classes::Wizard, "Wizard"},
+        };
+
+        if (map.find(class_type) != map.end())
+        {
+            return map[class_type];
+        }
+        else
+        {
+            return "Unknown";
+        }
+    }
+
+    // NOTE: Defaults to a rogue if str not found
+    static Classes StringToClass(std::string str)
+    {
+        std::unordered_map<std::string, Classes> map
+        {
+            {"barbarian", Classes::Barbarian},
+            {"bard", Classes::Bard},
+            {"cleric", Classes::Cleric},
+            {"druid", Classes::Druid},
+            {"fighter", Classes::Fighter},
+            {"monk", Classes::Monk},
+            {"paladin", Classes::Paladin},
+            {"ranger", Classes::Ranger},
+            {"rogue", Classes::Rogue},
+            {"sorcerer", Classes::Sorcerer},
+            {"warlock", Classes::Warlock},
+            {"wizard", Classes::Wizard},
+        };
+
+        if (map.find(str) != map.end())
+        {
+            return map[str];
+        }
+        else
+        {
+            return Utility::Classes::Rogue;
+        }
+    }
 
     static uint8_t SumDice(const std::vector<uint8_t>& dice)
     {

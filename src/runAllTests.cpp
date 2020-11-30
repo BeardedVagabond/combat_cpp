@@ -5,8 +5,8 @@
 class CombatantTest : public testing::Test
 {
 protected:
-    Combatant player{ "player" };
-    Combatant enemy{ "enemy" };
+    Combatant player{ "player", Utility::Classes::Rogue };
+    Combatant enemy{ "enemy", Utility::Classes::Rogue };
 };
 
 TEST_F(CombatantTest, Constructor)
@@ -51,14 +51,14 @@ TEST_F(CombatantTest, HealIncreasesHealthIfDamaged)
     auto max_health = player.GetHealth();
     player.SustainDamage(max_health - 1);
     auto damaged = player.GetHealth();
-    player.Heal();
+    player.Heal(-1);
     EXPECT_GT(player.GetHealth(), damaged);
 }
 
 TEST_F(CombatantTest, HealDoesNotGoAboveMaxHealth)
 {
     auto max_health = player.GetHealth();
-    player.Heal();
+    player.Heal(-1);
     EXPECT_EQ(player.GetHealth(), max_health);
 }
 

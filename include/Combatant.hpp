@@ -12,11 +12,11 @@ class Combatant
 {
 public:
     Combatant();
-    explicit Combatant(const std::string& name);
+    Combatant(const std::string& name, const Utility::Classes class_type);
 
     std::pair<Utility::RollStatus, int8_t> Attack(Combatant* const target) const;
 
-    uint8_t Heal();
+    uint8_t Heal(uint8_t num_dice);
 
     // Note that "target" here is the current target in the fight loop
     bool RunAway(Combatant* const target) const;
@@ -48,12 +48,15 @@ private:
     std::unique_ptr<Die> m_d20;
     std::unique_ptr<Die> m_d8;
     std::unique_ptr<Die> m_d6;
+    std::unique_ptr<Die> m_hit_die;
     std::string m_name;
+    Utility::Classes m_class_type;
     std::vector<uint8_t> m_stats;
     std::vector<int8_t> m_modifiers;
     uint8_t m_max_health;
     uint8_t m_armor_class;
-    uint8_t m_health;    
+    uint8_t m_health; 
+    uint8_t m_level;
 };
 
 #endif //! COMBAT_CPP_COMBATANT_HPP_

@@ -4,18 +4,48 @@ Combatant::Combatant()
     : m_d20(std::make_unique<Die>(20))
     , m_d8(std::make_unique<Die>(8))
     , m_d6(std::make_unique<Die>(6))
+    , m_hit_die(std::make_unique<Die>(8))
     , m_name()
+    , m_class_type()
     , m_stats(6, 11)
     , m_modifiers(6, 0)
     , m_max_health(8)
     , m_armor_class(11)
     , m_health(8)
+    , m_level(1)
 { }
 
-Combatant::Combatant(const std::string& name)
+Combatant::Combatant(const std::string& name, const Utility::Classes class_type)
     : Combatant()
 { 
     m_name = name;
+    m_class_type = class_type;
+
+    // Modify hit die according to class (default is d8)
+    // NOTE: this is used when leveling up and resting
+    switch (class_type)
+    {
+    case Utility::Classes::Barbarian:
+        m_hit_die = std::make_unique<Die>(12);
+        break;
+    case Utility::Classes::Fighter:
+        m_hit_die = std::make_unique<Die>(10);
+        break;
+    case Utility::Classes::Paladin:
+        m_hit_die = std::make_unique<Die>(10);
+        break;
+    case Utility::Classes::Ranger:
+        m_hit_die = std::make_unique<Die>(10);
+        break;
+    case Utility::Classes::Sorcerer:
+        m_hit_die = std::make_unique<Die>(6);
+        break;
+    case Utility::Classes::Wizard:
+        m_hit_die = std::make_unique<Die>(6);
+        break;
+    default:
+        break;
+    }
 }
 
 std::pair<Utility::RollStatus, int8_t> Combatant::Attack(Combatant* const target) const
@@ -43,9 +73,10 @@ std::pair<Utility::RollStatus, int8_t> Combatant::Attack(Combatant* const target
     return { roll_status, total_damage };
 }
 
-uint8_t Combatant::Heal()
+uint8_t Combatant::Heal(uint8_t num_dice)
 {
-    uint8_t heal_die = m_d8->Roll(1).front();
+    auto n = std::clamp(num_dice, static_cast<uint8_t>(0), m_level);
+    uint8_t heal_die = Utility::SumDice(m_hit_die->Roll(n));
     auto health = GetHealth();
     if (m_health != m_max_health)
     {
@@ -76,11 +107,12 @@ std::string Combatant::ToString() const
 {
     std::string str = "";
     str += m_name + ":";
+    str += "\n  -> Class: " + Utility::ClassString(m_class_type);
     str += "\n  -> HP: " + std::to_string(m_health) + " / ";
     str += std::to_string(m_max_health);
-    str += "\n  -> stats: " + Utility::StatString(m_stats);
-    str += "\n  -> modifiers: " + Utility::StatString(m_modifiers);
-    str += "\n  -> armor class: " + std::to_string(m_armor_class);
+    str += "\n  -> Stats: " + Utility::StatString(m_stats);
+    str += "\n  -> Modifiers: " + Utility::StatString(m_modifiers);
+    str += "\n  -> Armor Class: " + std::to_string(m_armor_class);
     return str;
 }
 
@@ -113,7 +145,34 @@ void Combatant::StatRolls()
     }
     // Set armor class assuming leather armor for now
     m_armor_class = 11 + m_modifiers[1];
+
+    // Set max health according to class type
     m_max_health = 8 + m_modifiers[2];
+    switch (m_class_type)
+    {
+    case Utility::Classes::Barbarian:
+        m_max_health += 4;
+        break;
+    case Utility::Classes::Fighter:
+        m_max_health += 2;
+        break;
+    case Utility::Classes::Paladin:
+        m_max_health += 2;
+        break;
+    case Utility::Classes::Ranger:
+        m_max_health += 2;
+        break;
+    case Utility::Classes::Sorcerer:
+        m_max_health -= 2;
+        break;
+    case Utility::Classes::Wizard:
+        m_max_health -= 2;
+        break;
+    default:
+        break;
+    }
+
+    // Spawn with full health
     m_health = m_max_health;
 }
 
