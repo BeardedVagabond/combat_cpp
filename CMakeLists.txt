@@ -59,6 +59,7 @@ set(ser_includes
 set(ser_sources
     src/Die.cpp
     src/Combatant.cpp
+    src/Utility.cpp
 )
 
 set(all_sources
