@@ -56,6 +56,7 @@ set(ser_includes
     include/Utility.hpp
     include/Item.hpp
     include/Weapon.hpp
+    include/Armour.hpp
 )
 
 set(ser_sources
@@ -63,6 +64,7 @@ set(ser_sources
     src/Combatant.cpp
     src/Utility.cpp
     src/Weapon.cpp
+    src/Armour.cpp
 )
 
 set(all_sources

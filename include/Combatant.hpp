@@ -10,6 +10,7 @@
 #include "Utility.hpp"
 #include "Die.hpp"
 #include "Weapon.hpp"
+#include "Armour.hpp"
 
 class Combatant
 {
@@ -43,15 +44,18 @@ private:
     std::unordered_map<Utility::Stats, uint8_t> stats_;
     std::unordered_map<Utility::Stats, int8_t> modifiers_;
     uint8_t max_health_;
-    uint8_t armor_class_;
+    uint8_t armour_class_;
     uint8_t health_; 
     uint8_t level_;
     Weapon weapon_;
+    Armour armour_;
 
     Combatant();
 
     // Chooses sum of the best three rolls from 4d6 for each stat
     void StatRolls();
+
+    uint8_t DetermineAC();
 };
 
 #endif //! COMBAT_CPP_COMBATANT_HPP_

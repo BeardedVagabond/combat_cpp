@@ -10,8 +10,9 @@ Weapon::Weapon(std::string name)
 { 
     name_ = name;
     const auto& info = weapon_list.at(name);
-    description_ = info.first;
-    damage_die_ = std::make_unique<Die>(info.second);
+    description_ = info.Description;
+    damage_die_ = std::make_unique<Die>(info.DieN);
+    num_dice_ = info.NumDice;
 }
 
 std::string Weapon::ToString()
@@ -21,7 +22,7 @@ std::string Weapon::ToString()
     return str;
 }
 
-Die* const Weapon::GetDie() const
+std::pair<Die* const, uint8_t> Weapon::GetDice() const
 {
-    return damage_die_.get();
+    return { damage_die_.get(), num_dice_ };
 }
