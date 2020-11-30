@@ -92,43 +92,6 @@ TEST_F(CombatantTest, DetermineModifiersReturnsINT8_MINOutOfRange)
     ASSERT_EQ(Utility::DetermineModifier(0), INT8_MIN);
 }
 
-//TEST_F(CombatantTest, SetStatsChangesStatsAndModifiers)
-//{
-//    auto default_stats = player.GetStats();
-//    auto default_modifiers = player.GetModifiers();
-//    auto default_max_health = player.GetHealth();
-//    
-//    // Test max modifier stats
-//    std::vector<uint8_t> mega_stats(6, 20);
-//    player.SetStats(mega_stats);
-//
-//    auto new_max_health = player.GetHealth();
-//    ASSERT_GT(new_max_health, default_max_health);
-//
-//    auto new_stats = player.GetStats();
-//    auto new_modifiers = player.GetModifiers();
-//    for (uint8_t i = 0; i < 6; ++i)
-//    {
-//        ASSERT_GT(new_stats[i], default_stats[i]);
-//        ASSERT_GT(new_modifiers[i], default_modifiers[i]);
-//    }
-//
-//    // Test min modifier stats
-//    std::vector<uint8_t> weak_stats(6, 2);
-//    player.SetStats(weak_stats);
-//
-//    new_max_health = player.GetHealth();
-//    ASSERT_LT(new_max_health, default_max_health);
-//
-//    new_stats = player.GetStats();
-//    new_modifiers = player.GetModifiers();
-//    for (uint8_t i = 0; i < 6; ++i)
-//    {
-//        ASSERT_LT(new_stats[i], default_stats[i]);
-//        ASSERT_LT(new_modifiers[i], default_modifiers[i]);
-//    }
-//}
-
 // NOTE: this test is a little weird as attack is a random action
 TEST_F(CombatantTest, AttackDoesDamage)
 {
@@ -136,3 +99,43 @@ TEST_F(CombatantTest, AttackDoesDamage)
     while (player.Attack(&enemy).second == 0);
     EXPECT_LT(enemy.GetHealth(), max_health);
 }
+
+// LEGACY TESTS
+/* 
+TEST_F(CombatantTest, SetStatsChangesStatsAndModifiers)
+{
+    auto default_stats = player.GetStats();
+    auto default_modifiers = player.GetModifiers();
+    auto default_max_health = player.GetHealth();
+    
+    // Test max modifier stats
+    std::vector<uint8_t> mega_stats(6, 20);
+    player.SetStats(mega_stats);
+
+    auto new_max_health = player.GetHealth();
+    ASSERT_GT(new_max_health, default_max_health);
+
+    auto new_stats = player.GetStats();
+    auto new_modifiers = player.GetModifiers();
+    for (uint8_t i = 0; i < 6; ++i)
+    {
+        ASSERT_GT(new_stats[i], default_stats[i]);
+        ASSERT_GT(new_modifiers[i], default_modifiers[i]);
+    }
+
+    // Test min modifier stats
+    std::vector<uint8_t> weak_stats(6, 2);
+    player.SetStats(weak_stats);
+
+    new_max_health = player.GetHealth();
+    ASSERT_LT(new_max_health, default_max_health);
+
+    new_stats = player.GetStats();
+    new_modifiers = player.GetModifiers();
+    for (uint8_t i = 0; i < 6; ++i)
+    {
+        ASSERT_LT(new_stats[i], default_stats[i]);
+        ASSERT_LT(new_modifiers[i], default_modifiers[i]);
+    }
+}
+*/
