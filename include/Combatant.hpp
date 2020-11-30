@@ -14,12 +14,14 @@ public:
     Combatant();
     explicit Combatant(const std::string& name);
 
-    int8_t Attack(Combatant* const target) const;
+    std::pair<Utility::RollStatus, int8_t> Attack(Combatant* const target) const;
 
     uint8_t Heal();
 
     // Note that "target" here is the current target in the fight loop
     bool RunAway(Combatant* const target) const;
+
+    uint8_t StatCheck(Utility::Stats stat);
 
     std::string ToString() const;
 

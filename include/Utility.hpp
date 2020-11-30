@@ -9,11 +9,21 @@
 class Utility
 {
 public:
-    enum RollStatus
+    enum class RollStatus
     {
         Failed,
         Success,
         Critical,
+    };
+
+    enum class Stats
+    {
+        STR,
+        DEX,
+        CON,
+        INT,
+        WIS,
+        CHR
     };
 
     static uint8_t SumDice(const std::vector<uint8_t>& dice)
