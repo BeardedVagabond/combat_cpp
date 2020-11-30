@@ -111,31 +111,66 @@ public:
         return sum;
     };
 
-    static std::string StatString(const std::vector<int8_t>& stats)
+    static std::string StatString(const std::unordered_map<Stats, int8_t>& stats)
     {
         std::string str = "";
-        str += "{ STR: " + std::to_string(stats[0]);
-        str += ", DEX: " + std::to_string(stats[1]);
-        str += ", CON: " + std::to_string(stats[2]);
-        str += ", INT: " + std::to_string(stats[3]);
-        str += ", WIS: " + std::to_string(stats[4]);
-        str += ", CHR: " + std::to_string(stats[5]);
+        str += "{ STR: " + std::to_string(stats.at(Stats::STR));
+        str += ", DEX: " + std::to_string(stats.at(Stats::DEX));
+        str += ", CON: " + std::to_string(stats.at(Stats::CON));
+        str += ", INT: " + std::to_string(stats.at(Stats::INT));
+        str += ", WIS: " + std::to_string(stats.at(Stats::WIS));
+        str += ", CHR: " + std::to_string(stats.at(Stats::CHR));
         str += " }";
         return str;
     };
 
-    static std::string StatString(const std::vector<uint8_t>& stats)
+    static std::string StatString(const std::unordered_map<Stats, uint8_t>& stats)
     {
         std::string str = "";
-        str += "{ STR: " + std::to_string(stats[0]);
-        str += ", DEX: " + std::to_string(stats[1]);
-        str += ", CON: " + std::to_string(stats[2]);
-        str += ", INT: " + std::to_string(stats[3]);
-        str += ", WIS: " + std::to_string(stats[4]);
-        str += ", CHR: " + std::to_string(stats[5]);
+        str += "{ STR: " + std::to_string(stats.at(Stats::STR));
+        str += ", DEX: " + std::to_string(stats.at(Stats::DEX));
+        str += ", CON: " + std::to_string(stats.at(Stats::CON));
+        str += ", INT: " + std::to_string(stats.at(Stats::INT));
+        str += ", WIS: " + std::to_string(stats.at(Stats::WIS));
+        str += ", CHR: " + std::to_string(stats.at(Stats::CHR));
         str += " }";
         return str;
     };
+
+
+    static int8_t DetermineModifier(uint8_t stat)
+    {
+        if (2 <= stat && stat <= 4) {
+            return -4;
+        }
+        else if (4 < stat && stat <= 6) {
+            return -3;
+        }
+        else if (6 < stat && stat <= 8) {
+            return -2;
+        }
+        else if (8 < stat && stat <= 10) {
+            return -1;
+        }
+        else if (10 < stat && stat <= 12) {
+            return 0;
+        }
+        else if (12 < stat && stat <= 14) {
+            return 1;
+        }
+        else if (14 < stat && stat <= 16) {
+            return 2;
+        }
+        else if (16 < stat && stat <= 18) {
+            return 3;
+        }
+        else if (18 < stat && stat <= 20) {
+            return 4;
+        }
+        else {
+            return -128;
+        }
+    }
 };
 
 #endif // !COMBAT_CPP_UTILITY_HPP_

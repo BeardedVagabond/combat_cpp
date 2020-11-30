@@ -278,7 +278,6 @@ int main()
     std::cout << "The members of this Combat are...\n";
     for (auto i = combatants.begin(); i != combatants.end(); ++i)
     {
-        i->second->StatRolls();
         std::cout << i->second->ToString() << "\n\n";
     }
         

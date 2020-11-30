@@ -14,9 +14,9 @@ public:
 
     std::string ToString() const;
 private:
-    uint8_t m_sides;
-    std::random_device m_rand_dev;
-    std::mt19937 m_rand_eng;
+    uint8_t sides_;
+    std::random_device rand_dev_;
+    std::mt19937 rand_eng_;
 };
 
 #endif //! COMBAT_CPP_DIE_HPP_
