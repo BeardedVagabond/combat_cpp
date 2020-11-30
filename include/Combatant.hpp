@@ -9,6 +9,7 @@
 
 #include "Utility.hpp"
 #include "Die.hpp"
+#include "Weapon.hpp"
 
 class Combatant
 {
@@ -45,6 +46,7 @@ private:
     uint8_t armor_class_;
     uint8_t health_; 
     uint8_t level_;
+    Weapon weapon_;
 
     Combatant();
 

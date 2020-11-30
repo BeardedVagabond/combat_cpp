@@ -54,12 +54,15 @@ set(ser_includes
     include/Die.hpp
     include/Combatant.hpp
     include/Utility.hpp
+    include/Item.hpp
+    include/Weapon.hpp
 )
 
 set(ser_sources
     src/Die.cpp
     src/Combatant.cpp
     src/Utility.cpp
+    src/Weapon.cpp
 )
 
 set(all_sources

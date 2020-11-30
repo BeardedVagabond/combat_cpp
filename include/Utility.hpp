@@ -29,6 +29,7 @@ namespace Utility
 
     enum class Classes
     {
+        Unknown,
         Barbarian,
         Bard,
         Cleric,
@@ -41,7 +42,7 @@ namespace Utility
         Sorcerer,
         Warlock,
         Wizard,
-    };   
+    };
 
     std::string ClassString(Classes class_type);
 

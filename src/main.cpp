@@ -259,7 +259,7 @@ int main()
     std::getline(std::cin, player_name);
     std::cout << "(Available classes: Barbarian, Bard, Cleric, Druid, "
         << "Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, Wizard)\n";
-    std::cout << "NOTE: This currently only affects your hit die and max health!\n";
+    std::cout << "NOTE: This affects your starting equipment, hit die, and max health!\n";
     std::cout << "I heard your enemies will be fighters... but what class do you fall under...? |>";
     std::string player_class;
     std::getline(std::cin, player_class);
