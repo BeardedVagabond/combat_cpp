@@ -13,3 +13,5 @@ It has passed build actions for windows-latest, ubuntu-latest, and macos-latest,
 Last but not least, please report any bugs you find! Any and all feedback is always welcome as I plan to continue casual improvements of this.
 
 Note: Enemy names and any references are meant simply as a tribute to stories I have enjoyed in the past. I will gladly modify as required should anyone have any issues with it
+
+Note: The majority of rules are based on this source: https://roll20.net/compendium/dnd5e/CategoryIndex%3ARules#content
