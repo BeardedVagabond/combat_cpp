@@ -1,7 +1,9 @@
 # combat_cpp
 
 A simple text-based console game that uses DnD5e rules for combat. This was originally implemented in Python, and now in C++ as my experience grows.
-Currently, all combatants (player and enemies) are spawned as lvl 1 Rogues wearing leather armor with randomised stats.
+The player chooses their class at the start of the game, and the two enemies are randomly selected for classes.
+
+Classes determine hit die (currently only used in resting), starting weapon, and starting armour.
 
 Possible actions are: Fight, Check Health, Rest, Look Around, and Exit. While fighting, it is only possible to attack or run away.
 
