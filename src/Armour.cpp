@@ -1,5 +1,4 @@
 #include "Armour.hpp"
-#include "..\include\Armour.hpp"
 
 Armour::Armour()
     : Item()
