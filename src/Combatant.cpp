@@ -6,33 +6,70 @@ Combatant::Combatant(const std::string& name, const Utility::Classes class_type)
     name_ = name;
     class_type_ = class_type;
 
-    // Modify hit die according to class (default is d8)
-    // NOTE: this is used when leveling up and resting
+    StatRolls();
+
+    // NOTE: Default hit_die is d8
+    // TODO: dual wielding, ranged weapons, proper shields
+    uint8_t ac_bonus = 0;
     switch (class_type)
     {
     case Utility::Classes::Barbarian:
         hit_die_ = std::make_unique<Die>(12);
+        weapon_ = Weapon("Greataxe");
+        break;
+    case Utility::Classes::Bard:
+        weapon_ = Weapon("Rapier");
+        armour_ = Armour("Leather");
+        break;
+    case Utility::Classes::Cleric:
+        weapon_ = Weapon("Mace");
+        armour_ = Armour("Leather");
+        ac_bonus = 2;
+        break;
+    case Utility::Classes::Druid:
+        weapon_ = Weapon("Scimitar");
+        armour_ = Armour("Leather");
         break;
     case Utility::Classes::Fighter:
         hit_die_ = std::make_unique<Die>(10);
+        weapon_ = Weapon("Longsword");
+        armour_ = Armour("Chain");
+        ac_bonus = 2;
+        break;
+    case Utility::Classes::Monk:
+        weapon_ = Weapon("Shortsword");
         break;
     case Utility::Classes::Paladin:
         hit_die_ = std::make_unique<Die>(10);
+        weapon_ = Weapon("Morningstar");
+        armour_ = Armour("Chain");
+        ac_bonus = 2;
         break;
     case Utility::Classes::Ranger:
         hit_die_ = std::make_unique<Die>(10);
+        weapon_ = Weapon("Shortsword");
+        armour_ = Armour("Scale");
+        break;
+    case Utility::Classes::Rogue:
+        weapon_ = Weapon("Dagger");
+        armour_ = Armour("Leather");
         break;
     case Utility::Classes::Sorcerer:
         hit_die_ = std::make_unique<Die>(6);
+        weapon_ = Weapon("Quarterstaff");
+        break;
+    case Utility::Classes::Warlock:
+        weapon_ = Weapon("Dagger");
+        armour_ = Armour("Leather");
         break;
     case Utility::Classes::Wizard:
         hit_die_ = std::make_unique<Die>(6);
+        weapon_ = Weapon("Quarterstaff");
         break;
     default:
         break;
     }
-
-    StatRolls();
+    armour_class_ = DetermineAC() + ac_bonus;
 }
 
 std::string Combatant::ToString() const
@@ -44,7 +81,9 @@ std::string Combatant::ToString() const
     str += std::to_string(max_health_);
     str += "\n  -> Stats: " + Utility::StatString(stats_);
     str += "\n  -> Modifiers: " + Utility::StatString(modifiers_);
-    str += "\n  -> Armor Class: " + std::to_string(armor_class_);
+    str += "\n  -> Armor Class: " + std::to_string(armour_class_);
+    str += "\n  -> Equipment:\n\tWeapon: " + weapon_.GetName();
+    str += "\n\tArmour: " + armour_.GetName();
     return str;
 }
 
@@ -53,18 +92,19 @@ std::pair<Utility::RollStatus, int8_t> Combatant::Attack(Combatant* const target
     auto hit_die = d20_->Roll(1).front();
     int8_t damage_dice = 0;
     Utility::RollStatus roll_status;
+    auto damage_die = weapon_.GetDice();
     if (hit_die == 20)
     {
-        damage_dice = Utility::SumDice(d8_->Roll(2));
+        damage_dice = Utility::SumDice(damage_die.first->Roll(2 * damage_die.second));
         roll_status = Utility::RollStatus::Critical;
     }
     else if (hit_die == 1)
     {
         return { Utility::RollStatus::Failed, 0 };
     }
-    else if (hit_die >= target->armor_class_)
+    else if (hit_die >= target->armour_class_)
     {
-        damage_dice = Utility::SumDice(d8_->Roll(1));
+        damage_dice = Utility::SumDice(damage_die.first->Roll(damage_die.second));
         roll_status = Utility::RollStatus::Success;
     }
     auto total_damage = std::clamp(damage_dice + this->modifiers_.at(Utility::Stats::STR), 0,
@@ -140,9 +180,10 @@ Combatant::Combatant()
     , stats_()
     , modifiers_()
     , max_health_(8)
-    , armor_class_(10)
+    , armour_class_(10)
     , health_(8)
     , level_(1)
+    , weapon_()
 { }
 
 void Combatant::StatRolls()
@@ -160,7 +201,7 @@ void Combatant::StatRolls()
         modifiers_.insert({ stat, Utility::DetermineModifier(sum) });
     }
     // Set armor class assuming no armor
-    armor_class_ = 10 + modifiers_.at(Utility::Stats::DEX);
+    armour_class_ = 10 + modifiers_.at(Utility::Stats::DEX);
 
     // Set max health according to class type
     max_health_ = 8 + modifiers_.at(Utility::Stats::CON);
@@ -190,4 +231,25 @@ void Combatant::StatRolls()
 
     // Spawn with full health
     health_ = max_health_;
+}
+
+uint8_t Combatant::DetermineAC()
+{
+    uint8_t mod = modifiers_.at(Utility::Stats::DEX);
+    switch (armour_.GetType())
+    {
+    case ArmourType::None:
+        mod = 0;
+        break;
+    case ArmourType::Light:
+        // Use full modifier
+        break;
+    case ArmourType::Medium:
+        mod = std::clamp(static_cast<int>(mod), 0, 2);
+        break;
+    case ArmourType::Heavy:
+        mod = 0;
+        break;
+    }
+    return armour_.GetAC() + mod;
 }

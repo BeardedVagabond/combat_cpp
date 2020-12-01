@@ -259,8 +259,8 @@ int main()
     std::getline(std::cin, player_name);
     std::cout << "(Available classes: Barbarian, Bard, Cleric, Druid, "
         << "Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, Wizard)\n";
-    std::cout << "NOTE: This currently only affects your hit die and max health!\n";
-    std::cout << "I heard your enemies will be fighters... but what class do you fall under...? |>";
+    std::cout << "NOTE: This affects your starting equipment, hit die, and max health!\n";
+    std::cout << "What class do you fall under...? |>";
     std::string player_class;
     std::getline(std::cin, player_class);
     ConditionStringInPlace(player_class, true, true);
@@ -271,8 +271,13 @@ int main()
     std::string player_key = player_name;
     ConditionStringInPlace(player_key, true, true);
     combatants[player_key] = std::make_unique<Combatant>(player_name, Utility::StringToClass(player_class));
-    combatants["baki"] = std::make_unique<Combatant>("Baki", Utility::Classes::Fighter);
-    combatants["ohma"] = std::make_unique<Combatant>("Ohma", Utility::Classes::Fighter);
+    
+    // Make enemies a random class
+    std::random_device rdev;
+    std::mt19937 reng(rdev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist(1, 12);
+    combatants["baki"] = std::make_unique<Combatant>("Baki", static_cast<Utility::Classes>(dist(reng)));
+    combatants["ohma"] = std::make_unique<Combatant>("Ohma", static_cast<Utility::Classes>(dist(reng)));
 
     // Generate stats and display all combatants
     std::cout << "The members of this Combat are...\n";
