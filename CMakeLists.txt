@@ -57,6 +57,7 @@ set(ser_includes
     include/Item.hpp
     include/Weapon.hpp
     include/Armour.hpp
+    include/States.hpp
 )
 
 set(ser_sources
