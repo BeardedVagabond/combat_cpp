@@ -121,8 +121,8 @@ bool GameLogic::IdleLoop()
             {
                 std::cout << target_ptr->GetName() << " has the initiative!\n";
             }
-            // TODO: need to pass args here...
-            state_.StartFight();
+            state_.StartFight(target_ptr, player_initiative);
+            return false;
         }
         else
         {
@@ -192,8 +192,7 @@ void GameLogic::CombatLoop(const GameState::Combat* const combat_state)
                 AttackCheck(player, target);
                 if (FeintCheck(target))
                 {
-                    state_.Feinted();
-                    return;
+                    break;
                 }
             }
             else if (action == "r" || action == "run")
@@ -212,8 +211,7 @@ void GameLogic::CombatLoop(const GameState::Combat* const combat_state)
                     AttackCheck(target, player);
                     if (FeintCheck(player))
                     {
-                        state_.Feinted();
-                        return;
+                        break;
                     }
                 }
             }
@@ -224,8 +222,7 @@ void GameLogic::CombatLoop(const GameState::Combat* const combat_state)
                 AttackCheck(target, player);
                 if (FeintCheck(player))
                 {
-                    state_.Feinted();
-                    return;
+                    break;
                 }
             }
         }
@@ -234,8 +231,7 @@ void GameLogic::CombatLoop(const GameState::Combat* const combat_state)
             AttackCheck(target, player);
             if (FeintCheck(player))
             {
-                state_.Feinted();
-                return;
+                break;
             }
         }
     }
@@ -243,13 +239,16 @@ void GameLogic::CombatLoop(const GameState::Combat* const combat_state)
     if (target->GetHealth() == 0)
     {
         std::cout << "Looks like " << target_name << " will be leaving Combat quite differently than they entered...\n\n";
-        combatants_.erase(target_name);
+        combatants_.erase(combat_state->target_key);
+        state_.FinishFight();
+        return;
     }
     
     if (player->GetHealth() == 0)
     {
         std::cout << "That bonfire is looking pretty nice now isn't it?...\n\n";
-        state_.Feinted();
+        state_.TakeRest();
+        return;
     }
 }
 
