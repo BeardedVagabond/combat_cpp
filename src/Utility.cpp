@@ -1,5 +1,7 @@
 #include "Utility.hpp"
 
+#include <algorithm>
+
 namespace Utility
 {
     std::string ClassString(Classes class_type)
