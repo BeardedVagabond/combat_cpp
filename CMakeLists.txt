@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(combat_cpp VERSION 0.1.0 LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 #----------------------------------------------------------------
@@ -57,6 +59,8 @@ set(ser_includes
     include/Item.hpp
     include/Weapon.hpp
     include/Armour.hpp
+    include/States.hpp
+    include/GameLogic.hpp
 )
 
 set(ser_sources
@@ -65,6 +69,7 @@ set(ser_sources
     src/Utility.cpp
     src/Weapon.cpp
     src/Armour.cpp
+    src/GameLogic.cpp
 )
 
 set(all_sources

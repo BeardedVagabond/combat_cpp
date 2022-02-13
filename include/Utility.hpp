@@ -56,6 +56,8 @@ namespace Utility
     std::string StatString(const std::unordered_map<Stats, uint8_t>& stats);
 
     int8_t DetermineModifier(uint8_t stat);
+
+    void ConditionStringInPlace(std::string& str, const bool remove_whitespace, const bool to_lower);
 };
 
 #endif // !COMBAT_CPP_UTILITY_HPP_

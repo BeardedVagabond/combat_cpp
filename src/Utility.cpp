@@ -1,5 +1,7 @@
 #include "Utility.hpp"
 
+#include <algorithm>
+
 namespace Utility
 {
     std::string ClassString(Classes class_type)
@@ -125,5 +127,20 @@ namespace Utility
         else {
             return -128;
         }
-    }    
+    }
+
+    void ConditionStringInPlace(std::string& str, const bool remove_whitespace, const bool to_lower)
+    {
+        if (remove_whitespace)
+        {
+            str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
+        }
+        if (to_lower)
+        {
+            for (char& c : str)
+            {
+                c = std::tolower(c);
+            }
+        }
+    }
 }
