@@ -22,14 +22,6 @@ struct GameState
             target_key = target->GetName();
             Utility::ConditionStringInPlace(target_key, true, true);
         };
-        Combat(const Combat& t) : target(t.target), target_key(t.target_key), player_initiative(t.player_initiative) {};
-        Combat& operator=(const Combat& t)
-        {
-            target = t.target;
-            target_key = t.target_key;
-            player_initiative = t.player_initiative;
-            return *this;
-        }
 
         Combatant* target;
         std::string target_key;
