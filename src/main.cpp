@@ -6,6 +6,7 @@
 
 #include "Die.hpp"
 #include "Combatant.hpp"
+#include "States.hpp"
 
 void ConditionStringInPlace(std::string& str, bool remove_whitespace, bool to_lower)
 {

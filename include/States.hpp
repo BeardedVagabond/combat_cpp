@@ -6,7 +6,9 @@
 struct GameState
 {
  public:
-    using State = std::variant<Idle, Combat, Rest, SelfCheck, LookAround>;
+    GameState()
+        : state_(Idle{})
+    {};
 
     void StartFight() { state_ = std::visit(StartFightEvent(), state_); };
     void FinishFight() { state_ = std::visit(ToIdleEvent(), state_); };
@@ -24,19 +26,20 @@ struct GameState
  private:
     struct Idle {};
     struct Combat {};
-    struct Rest {};
-    struct SelfCheck {};
-    struct LookAround {};
+    struct Resting {};
+    struct SelfChecking {};
+    struct LookingAround {};
 
+    using State = std::variant<Idle, Combat, Resting, SelfChecking, LookingAround>;
     State state_;
 
     struct ToIdleEvent
     {
         State operator() (const Idle&) { return Idle{}; };
         State operator() (const Combat&) { return Idle{}; };
-        State operator() (const Rest&) { return Idle{}; };
-        State operator() (const SelfCheck&) { return Idle{}; };
-        State operator() (const LookAround&) { return Idle{}; };
+        State operator() (const Resting&) { return Idle{}; };
+        State operator() (const SelfChecking&) { return Idle{}; };
+        State operator() (const LookingAround&) { return Idle{}; };
     };
 
     struct StartFightEvent
@@ -44,39 +47,39 @@ struct GameState
         State operator() (const Idle&) { return Combat{}; };
         State operator() (const Combat&) { return Combat{}; };
 
-        State operator() (const Rest&) { return Rest{}; };
-        State operator() (const SelfCheck&) { return SelfCheck{}; };
-        State operator() (const LookAround&) { return LookAround{}; };
+        State operator() (const Resting&) { return Resting{}; };
+        State operator() (const SelfChecking&) { return SelfChecking{}; };
+        State operator() (const LookingAround&) { return LookingAround{}; };
     };
 
     struct TakeRestEvent
     {
-        State operator() (const Idle&) { return Rest{}; };
-        State operator() (const Combat&) { return Rest{}; };
-        State operator() (const Rest&) { return Rest{}; };
+        State operator() (const Idle&) { return Resting{}; };
+        State operator() (const Combat&) { return Resting{}; };
+        State operator() (const Resting&) { return Resting{}; };
 
-        State operator() (const SelfCheck&) { return SelfCheck{}; };
-        State operator() (const LookAround&) { return LookAround{}; };
+        State operator() (const SelfChecking&) { return SelfChecking{}; };
+        State operator() (const LookingAround&) { return LookingAround{}; };
     };
 
     struct LookAroundEvent
     {
-        State operator() (const Idle&) { return LookAround{}; };
-        State operator() (const LookAround&) { return LookAround{}; };
+        State operator() (const Idle&) { return LookingAround{}; };
+        State operator() (const LookingAround&) { return LookingAround{}; };
 
         State operator() (const Combat&) { return Combat{}; };
-        State operator() (const Rest&) { return Rest{}; };
-        State operator() (const SelfCheck&) { return SelfCheck{}; };
+        State operator() (const Resting&) { return Resting{}; };
+        State operator() (const SelfChecking&) { return SelfChecking{}; };
     };
 
     struct SelfCheckEvent
     {
-        State operator() (const Idle&) { return SelfCheck{}; };
-        State operator() (const SelfCheck&) { return SelfCheck{}; };
+        State operator() (const Idle&) { return SelfChecking{}; };
+        State operator() (const SelfChecking&) { return SelfChecking{}; };
 
         State operator() (const Combat&) { return Combat{}; };
-        State operator() (const Rest&) { return Rest{}; };
-        State operator() (const LookAround&) { return LookAround{}; };
+        State operator() (const Resting&) { return Resting{}; };
+        State operator() (const LookingAround&) { return LookingAround{}; };
     };
 };
 
