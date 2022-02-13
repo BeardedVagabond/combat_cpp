@@ -60,6 +60,7 @@ set(ser_includes
     include/Weapon.hpp
     include/Armour.hpp
     include/States.hpp
+    include/GameLogic.hpp
 )
 
 set(ser_sources
@@ -68,6 +69,7 @@ set(ser_sources
     src/Utility.cpp
     src/Weapon.cpp
     src/Armour.cpp
+    src/GameLogic.cpp
 )
 
 set(all_sources

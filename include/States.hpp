@@ -1,14 +1,40 @@
 #ifndef COMBAT_CPP_STATE_HPP_
 #define COMBAT_CPP_STATE_HPP_
 
+#include <cstdint>
 #include <variant>
+
+#include "Combatant.hpp"
 
 struct GameState
 {
  public:
+    struct Idle {};
+    struct Combat 
+    {
+        Combat() : target(nullptr), player_initiative(0) {};
+        Combat(const Combat& t) : target(t.target), player_initiative(t.player_initiative) {};
+        Combat& operator=(const Combat& t)
+        {
+            target = t.target;
+            player_initiative = t.player_initiative;
+            return *this;
+        }
+
+        Combatant* target;
+        uint8_t player_initiative;
+    };
+    struct Resting {};
+    struct SelfChecking {};
+    struct LookingAround {};
+
+    using State = std::variant<Idle, Combat, Resting, SelfChecking, LookingAround>;
+
     GameState()
         : state_(Idle{})
     {};
+
+    State GetState() { return state_; };
 
     void StartFight() { state_ = std::visit(StartFightEvent(), state_); };
     void FinishFight() { state_ = std::visit(ToIdleEvent(), state_); };
@@ -24,13 +50,6 @@ struct GameState
     void FinishSelfCheck() { state_ = std::visit(ToIdleEvent(), state_); };
 
  private:
-    struct Idle {};
-    struct Combat {};
-    struct Resting {};
-    struct SelfChecking {};
-    struct LookingAround {};
-
-    using State = std::variant<Idle, Combat, Resting, SelfChecking, LookingAround>;
     State state_;
 
     struct ToIdleEvent
