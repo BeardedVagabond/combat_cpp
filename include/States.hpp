@@ -52,7 +52,19 @@ struct GameState
         }
         if (new_state.has_value()) { state_ = new_state.value(); };
     };
-    void FinishFight() { state_ = Idle{}; };
+    void FinishFight()
+    {
+        std::optional<State> new_state;
+        if (std::holds_alternative<Combat>(state_))
+        {
+            new_state = Idle{};
+        }
+        else
+        {
+            new_state = std::nullopt;
+        }
+        if (new_state.has_value()) { state_ = new_state.value(); };
+    };
 
     void TakeRest() 
     {
@@ -67,7 +79,19 @@ struct GameState
         }
         if (new_state.has_value()) { state_ = new_state.value(); };
     };
-    void FinishRest() { state_ = Idle{}; };
+    void FinishRest()
+    {
+        std::optional<State> new_state;
+        if (std::holds_alternative<Resting>(state_))
+        {
+            new_state = Idle{};
+        }
+        else
+        {
+            new_state = std::nullopt;
+        }
+        if (new_state.has_value()) { state_ = new_state.value(); };
+    };
 
     void LookAround() 
     { 
@@ -82,7 +106,19 @@ struct GameState
         }
         if (new_state.has_value()) { state_ = new_state.value(); };
     };
-    void FinishLook() { state_ = Idle{}; };
+    void FinishLook()
+    {
+        std::optional<State> new_state;
+        if (std::holds_alternative<LookingAround>(state_))
+        {
+            new_state = Idle{};
+        }
+        else
+        {
+            new_state = std::nullopt;
+        }
+        if (new_state.has_value()) { state_ = new_state.value(); };
+    };
 
     void SelfCheck()
     {
@@ -97,7 +133,19 @@ struct GameState
         }
         if (new_state.has_value()) { state_ = new_state.value(); };
     };
-    void FinishSelfCheck() { state_ = Idle{}; };
+    void FinishSelfCheck()
+    {
+        std::optional<State> new_state;
+        if (std::holds_alternative<SelfChecking>(state_))
+        {
+            new_state = Idle{};
+        }
+        else
+        {
+            new_state = std::nullopt;
+        }
+        if (new_state.has_value()) { state_ = new_state.value(); };
+    };
 
  private:
     State state_;
