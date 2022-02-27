@@ -15,56 +15,57 @@ Combatant::Combatant(const std::string& name, const Utility::Classes class_type)
     {
     case Utility::Classes::Barbarian:
         hit_die_ = std::make_unique<Die>(12);
-        weapon_ = Weapon("Greataxe");
+        main_weapon_ = Weapon("Greataxe");
         break;
     case Utility::Classes::Bard:
-        weapon_ = Weapon("Rapier");
+        main_weapon_ = Weapon("Rapier");
         armour_ = Armour("Leather");
         break;
     case Utility::Classes::Cleric:
-        weapon_ = Weapon("Mace");
+        main_weapon_ = Weapon("Mace");
         armour_ = Armour("Leather");
         ac_bonus = 2;
         break;
     case Utility::Classes::Druid:
-        weapon_ = Weapon("Scimitar");
+        main_weapon_ = Weapon("Scimitar");
         armour_ = Armour("Leather");
         break;
     case Utility::Classes::Fighter:
         hit_die_ = std::make_unique<Die>(10);
-        weapon_ = Weapon("Longsword");
+        main_weapon_ = Weapon("Longsword");
         armour_ = Armour("Chain");
         ac_bonus = 2;
         break;
     case Utility::Classes::Monk:
-        weapon_ = Weapon("Shortsword");
+        main_weapon_ = Weapon("Shortsword");
         break;
     case Utility::Classes::Paladin:
         hit_die_ = std::make_unique<Die>(10);
-        weapon_ = Weapon("Morningstar");
+        main_weapon_ = Weapon("Morningstar");
         armour_ = Armour("Chain");
         ac_bonus = 2;
         break;
     case Utility::Classes::Ranger:
         hit_die_ = std::make_unique<Die>(10);
-        weapon_ = Weapon("Shortsword");
+        main_weapon_ = Weapon("Shortsword");
         armour_ = Armour("Scale");
         break;
     case Utility::Classes::Rogue:
-        weapon_ = Weapon("Dagger");
+        main_weapon_ = Weapon("Dagger");
+        offhand_weapon_ = Weapon("Dagger");
         armour_ = Armour("Leather");
         break;
     case Utility::Classes::Sorcerer:
         hit_die_ = std::make_unique<Die>(6);
-        weapon_ = Weapon("Quarterstaff");
+        main_weapon_ = Weapon("Quarterstaff");
         break;
     case Utility::Classes::Warlock:
-        weapon_ = Weapon("Dagger");
+        main_weapon_ = Weapon("Dagger");
         armour_ = Armour("Leather");
         break;
     case Utility::Classes::Wizard:
         hit_die_ = std::make_unique<Die>(6);
-        weapon_ = Weapon("Quarterstaff");
+        main_weapon_ = Weapon("Quarterstaff");
         break;
     default:
         break;
@@ -82,44 +83,85 @@ std::string Combatant::ToString() const
     str += "\n  -> Stats: " + Utility::StatString(stats_);
     str += "\n  -> Modifiers: " + Utility::StatString(modifiers_);
     str += "\n  -> Armour Class: " + std::to_string(armour_class_);
-    str += "\n  -> Equipment:\n\tWeapon: " + weapon_.GetName();
+    str += "\n  -> Equipment:";
+    str += "\n\tWeapon: " + main_weapon_.GetName();
+    if (offhand_weapon_.has_value()) { str += "\n\tWeapon: " + offhand_weapon_.value().GetName(); }
     str += "\n\tArmour: " + armour_.GetName();
     return str;
 }
 
-AttackResult Combatant::Attack(Combatant* const target) const
+AttackResults Combatant::Attack(Combatant* const target) const
 {
-    AttackResult result;
-    result.hit_die = d20_->Roll(1).front();
-    int8_t damage_dice = 0;
-    auto damage_die = weapon_.GetDice();
-    if (result.hit_die == 20)
+    const auto perform_attack = [&target, this](const AttackType attack_type) -> AttackResult
     {
-        damage_dice = Utility::SumDice(damage_die.first->Roll(2 * damage_die.second));
-        result.status = Utility::RollStatus::Critical;
-    }
-    else if (result.hit_die >= target->armour_class_)
-    {
-        damage_dice = Utility::SumDice(damage_die.first->Roll(damage_die.second));
-        result.status = Utility::RollStatus::Success;
-    }
-    else if (result.hit_die == 1)
-    {
-        result.damage = 0;
-        result.status = Utility::RollStatus::CriticalFailure;
+        const Weapon* weapon = nullptr;
+        switch (attack_type)
+        {
+        case AttackType::MainMelee:
+            weapon = &main_weapon_;
+            break;
+        case AttackType::OffhandMelee:
+            weapon = &offhand_weapon_.value();
+            break;
+        default:
+            throw std::logic_error("Attack performed with unknown AttackType enum!");
+        }
+
+        AttackResult result;
+        result.hit_die = d20_->Roll(1).front();
+        int8_t damage_dice = 0;
+        auto damage_die = weapon->GetDice();
+        if (result.hit_die == 20)
+        {
+            damage_dice = Utility::SumDice(damage_die.first->Roll(2 * damage_die.second));
+            result.status = Utility::RollStatus::Critical;
+        }
+        else if (result.hit_die >= target->armour_class_)
+        {
+            damage_dice = Utility::SumDice(damage_die.first->Roll(damage_die.second));
+            result.status = Utility::RollStatus::Success;
+        }
+        else if (result.hit_die == 1)
+        {
+            result.damage = 0;
+            result.status = Utility::RollStatus::CriticalFailure;
+            return result;
+        }
+        else
+        {
+            result.damage = 0;
+            result.status = Utility::RollStatus::Failed;
+            return result;
+        }
+
+        int8_t damage = 0;
+        switch (attack_type)
+        {
+        case AttackType::MainMelee:
+            damage = std::clamp(damage_dice + this->modifiers_.at(Utility::Stats::STR), 0,
+                static_cast<int>(UINT8_MAX));
+            break;
+        case AttackType::OffhandMelee:
+            if (const auto modifier = this->modifiers_.at(Utility::Stats::STR); modifier >= 0)
+            {
+                damage = std::clamp(static_cast<int>(damage_dice), 0, static_cast<int>(UINT8_MAX));
+            }
+            else
+            {
+                damage = std::clamp(damage_dice + this->modifiers_.at(Utility::Stats::STR), 0,
+                    static_cast<int>(UINT8_MAX));
+            }
+            break;
+        }
+        target->SustainDamage(damage);
+        result.damage = damage;
         return result;
-    }
-    else
-    {
-        result.damage = 0;
-        result.status = Utility::RollStatus::Failed;
-        return result;
-    }
-    auto total_damage = std::clamp(damage_dice + this->modifiers_.at(Utility::Stats::STR), 0,
-        static_cast<int>(UINT8_MAX));
-    target->SustainDamage(total_damage);
-    result.damage = total_damage;
-    return result;
+    };
+
+    AttackResults results;
+    results.first = perform_attack(AttackType::MainMelee);
+    if (offhand_weapon_.has_value()) { results.second = perform_attack(AttackType::OffhandMelee); };
+    return results;
 }
 
 uint8_t Combatant::Heal(uint8_t num_dice)
@@ -172,7 +214,7 @@ Combatant::Combatant()
     , armour_class_(10)
     , health_(8)
     , level_(1)
-    , weapon_()
+    , main_weapon_()
 { }
 
 void Combatant::StatRolls()

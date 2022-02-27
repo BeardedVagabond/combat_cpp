@@ -307,25 +307,40 @@ bool GameLogic::FeintCheck(Combatant* const target)
 
 void GameLogic::AttackCheck(Combatant* const attacker, Combatant* const target)
 {
-    auto attack_result = attacker->Attack(target);
-    std::cout << attacker->GetName() << " rolled a " << std::to_string(attack_result.hit_die) << "!\n";
+    auto attack_results = attacker->Attack(target);
 
-    switch (attack_result.status)
+    const auto perform_check = [&attacker, &target](const AttackResult& result)
     {
-    case Utility::RollStatus::CriticalFailure:
-        std::cout << "\tLooks like " << attacker->GetName() << " completely missed!!\n\n";
-        return;
-    case Utility::RollStatus::Failed:
-        std::cout << "\tLooks like " << target->GetName() << "'s armour is too strong!!\n\n";
-        return;
-    case Utility::RollStatus::Success:
-        std::cout << "\t" << attacker->GetName() << " strikes true!!\n";
-        break;
-    case Utility::RollStatus::Critical:
-        std::cout << "\t" << attacker->GetName() << " lands a CRITICAL HIT!!\n";
-        break;
+        std::cout << attacker->GetName() << " rolled a " << std::to_string(result.hit_die) << "!\n";
+
+        switch (result.status)
+        {
+        case Utility::RollStatus::CriticalFailure:
+            std::cout << "\tLooks like " << attacker->GetName() << " completely missed!!\n\n";
+            return;
+        case Utility::RollStatus::Failed:
+            std::cout << "\tLooks like " << target->GetName() << "'s armour is too strong!!\n\n";
+            return;
+        case Utility::RollStatus::Success:
+            std::cout << "\t" << attacker->GetName() << " strikes true!!\n";
+            break;
+        case Utility::RollStatus::Critical:
+            std::cout << "\t" << attacker->GetName() << " lands a CRITICAL HIT!!\n";
+            break;
+        }
+
+        std::cout << "\t" << attacker->GetName() << " manages to inflict "
+            << std::to_string(result.damage) << " damage to " << target->GetName() << "\n\n";
+    };
+
+    // Scoped to make sure main hand result cannot be used by offhand result
+    {
+        perform_check(attack_results.first);
     }
 
-    std::cout << "\t" << attacker->GetName() << " manages to inflict "
-        << std::to_string(attack_result.damage) << " damage to " << target->GetName() << "\n\n";
+    if (attack_results.second.has_value())
+    {
+        std::cout << attacker->GetName() << " attacks again with their offhand weapon!!\n";
+        perform_check(attack_results.second.value());
+    }
 }

@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <unordered_map>
+#include <optional>
 
 #include <cstdint>
 
@@ -19,13 +20,21 @@ struct AttackResult
     int8_t damage;
 };
 
+typedef std::pair<AttackResult, std::optional<AttackResult>> AttackResults;
+
+enum class AttackType
+{
+    MainMelee,
+    OffhandMelee,
+};
+
 class Combatant
 {
 public:
     Combatant(const std::string& name, const Utility::Classes class_type);
     std::string ToString() const;
 
-    AttackResult Attack(Combatant* const target) const;
+    AttackResults Attack(Combatant* const target) const;
     uint8_t Heal(const uint8_t num_dice);
 
     // Note that "target" here is the current target in the fight loop
@@ -54,7 +63,8 @@ private:
     uint8_t armour_class_;
     uint8_t health_; 
     uint8_t level_;
-    Weapon weapon_;
+    Weapon main_weapon_;
+    std::optional<Weapon> offhand_weapon_;
     Armour armour_;
 
     Combatant();
