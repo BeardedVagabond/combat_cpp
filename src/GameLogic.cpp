@@ -307,25 +307,56 @@ bool GameLogic::FeintCheck(Combatant* const target)
 
 void GameLogic::AttackCheck(Combatant* const attacker, Combatant* const target)
 {
-    auto attack_result = attacker->Attack(target);
-    std::cout << attacker->GetName() << " rolled a " << std::to_string(attack_result.hit_die) << "!\n";
+    auto attack_results = attacker->Attack(target);
 
-    switch (attack_result.status)
+    // Scoped to make sure main hand result cannot be used by offhand result
     {
-    case Utility::RollStatus::CriticalFailure:
-        std::cout << "\tLooks like " << attacker->GetName() << " completely missed!!\n\n";
-        return;
-    case Utility::RollStatus::Failed:
-        std::cout << "\tLooks like " << target->GetName() << "'s armour is too strong!!\n\n";
-        return;
-    case Utility::RollStatus::Success:
-        std::cout << "\t" << attacker->GetName() << " strikes true!!\n";
-        break;
-    case Utility::RollStatus::Critical:
-        std::cout << "\t" << attacker->GetName() << " lands a CRITICAL HIT!!\n";
-        break;
+        const auto& main_attack_result = attack_results.first;
+        std::cout << attacker->GetName() << " rolled a " << std::to_string(main_attack_result.hit_die) << "!\n";
+
+        switch (main_attack_result.status)
+        {
+        case Utility::RollStatus::CriticalFailure:
+            std::cout << "\tLooks like " << attacker->GetName() << " completely missed!!\n\n";
+            return;
+        case Utility::RollStatus::Failed:
+            std::cout << "\tLooks like " << target->GetName() << "'s armour is too strong!!\n\n";
+            return;
+        case Utility::RollStatus::Success:
+            std::cout << "\t" << attacker->GetName() << " strikes true!!\n";
+            break;
+        case Utility::RollStatus::Critical:
+            std::cout << "\t" << attacker->GetName() << " lands a CRITICAL HIT!!\n";
+            break;
+        }
+
+        std::cout << "\t" << attacker->GetName() << " manages to inflict "
+            << std::to_string(main_attack_result.damage) << " damage to " << target->GetName() << "\n\n";
     }
 
-    std::cout << "\t" << attacker->GetName() << " manages to inflict "
-        << std::to_string(attack_result.damage) << " damage to " << target->GetName() << "\n\n";
+    if (attack_results.second.has_value())
+    {
+        const auto& offhand_attack_result = attack_results.second.value();
+        std::cout << attacker->GetName() << " attacks again with their offhand weapon!!\n";
+        std::cout << attacker->GetName() << " rolled a " << std::to_string(offhand_attack_result.hit_die) << "!\n";
+
+        switch (offhand_attack_result.status)
+        {
+        case Utility::RollStatus::CriticalFailure:
+            std::cout << "\tLooks like " << attacker->GetName() << " completely missed!!\n\n";
+            return;
+        case Utility::RollStatus::Failed:
+            std::cout << "\tLooks like " << target->GetName() << "'s armour is too strong!!\n\n";
+            return;
+        case Utility::RollStatus::Success:
+            std::cout << "\t" << attacker->GetName() << " strikes true!!\n";
+            break;
+        case Utility::RollStatus::Critical:
+            std::cout << "\t" << attacker->GetName() << " lands a CRITICAL HIT!!\n";
+            break;
+        }
+
+        std::cout << "\t" << attacker->GetName() << " manages to inflict "
+            << std::to_string(offhand_attack_result.damage) << " damage to " << target->GetName() << "\n\n";
+    }
 }
