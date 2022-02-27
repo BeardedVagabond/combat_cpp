@@ -12,28 +12,35 @@
 #include "Weapon.hpp"
 #include "Armour.hpp"
 
+struct AttackResult
+{
+    Utility::RollStatus status;
+    uint8_t hit_die;
+    int8_t damage;
+};
+
 class Combatant
 {
 public:
     Combatant(const std::string& name, const Utility::Classes class_type);
     std::string ToString() const;
 
-    std::pair<Utility::RollStatus, int8_t> Attack(Combatant* const target) const;
-    uint8_t Heal(uint8_t num_dice);
+    AttackResult Attack(Combatant* const target) const;
+    uint8_t Heal(const uint8_t num_dice);
 
     // Note that "target" here is the current target in the fight loop
     bool RunAway(Combatant* const target) const;
 
     // Roll 1d20 + stat modifier
-    uint8_t StatCheck(Utility::Stats stat);
+    uint8_t StatCheck(const Utility::Stats stat);
 
-    std::string GetName() const;
-    std::string GetClass() const;
-    uint8_t GetHealth() const;
-    uint8_t GetMaxHealth() const;
+    std::string GetName() const { return name_; };
+    std::string GetClass() const { return Utility::ClassString(class_type_); };
+    uint8_t GetHealth() const { return health_; };
+    uint8_t GetMaxHealth() const { return max_health_; };
 
     // Be sure to add modifier to damage dice!
-    void SustainDamage(uint8_t total_damage);
+    void SustainDamage(const uint8_t total_damage);
 private:
     std::unique_ptr<Die> d20_;
     std::unique_ptr<Die> d8_;

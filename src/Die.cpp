@@ -1,13 +1,12 @@
 #include "Die.hpp"
 
-Die::Die(uint8_t num_sides)
+Die::Die(const uint8_t num_sides)
     : sides_(num_sides)
     , rand_dev_()
     , rand_eng_(rand_dev_())
-{
-}
+{ }
 
-std::vector<uint8_t> Die::Roll(uint8_t num_rolls)
+std::vector<uint8_t> Die::Roll(const uint8_t num_rolls)
 {
     std::uniform_int_distribution<std::mt19937::result_type> dist(1, sides_);
     std::vector<uint8_t> results;

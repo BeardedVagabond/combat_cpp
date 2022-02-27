@@ -1,6 +1,7 @@
 #include "Utility.hpp"
 
 #include <algorithm>
+#include <numeric>
 
 namespace Utility
 {
@@ -24,7 +25,7 @@ namespace Utility
 
         if (map.find(class_type) != map.end())
         {
-            return map[class_type];
+            return map.at(class_type);
         }
         else
         {
@@ -32,7 +33,7 @@ namespace Utility
         }
     }
 
-    Classes StringToClass(std::string str)
+    Classes StringToClass(const std::string& str)
     {
         std::unordered_map<std::string, Classes> map
         {
@@ -52,7 +53,7 @@ namespace Utility
 
         if (map.find(str) != map.end())
         {
-            return map[str];
+            return map.at(str);
         }
         else
         {
@@ -62,12 +63,7 @@ namespace Utility
 
     uint8_t SumDice(const std::vector<uint8_t>& dice)
     {
-        uint8_t sum = 0;
-        for (uint8_t die : dice)
-        {
-            sum += die;
-        }
-        return sum;
+        return std::reduce(dice.cbegin(), dice.cend());
     };
 
     std::string StatString(const std::unordered_map<Stats, int8_t>& stats)
@@ -137,10 +133,12 @@ namespace Utility
         }
         if (to_lower)
         {
-            for (char& c : str)
-            {
-                c = std::tolower(c);
-            }
+            std::transform(str.begin(), str.end(), str.begin(), [](auto& c) {return std::tolower(c); });
         }
+    }
+    std::string ConditionString(std::string str, const bool remove_whitespace, const bool to_lower)
+    {
+        ConditionStringInPlace(str, remove_whitespace, to_lower);
+        return str;
     }
 }

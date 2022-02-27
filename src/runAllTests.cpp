@@ -97,7 +97,7 @@ TEST_F(CombatantTest, DetermineModifiersReturnsINT8_MINOutOfRange)
 TEST_F(CombatantTest, AttackDoesDamage)
 {
     auto max_health = enemy.GetHealth();
-    while (player.Attack(&enemy).second == 0);
+    while (player.Attack(&enemy).damage == 0);
     EXPECT_LT(enemy.GetHealth(), max_health);
 }
 

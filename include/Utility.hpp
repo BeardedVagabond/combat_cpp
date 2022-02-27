@@ -12,6 +12,7 @@ namespace Utility
 {
     enum class RollStatus
     {
+        CriticalFailure,
         Failed,
         Success,
         Critical,
@@ -47,7 +48,7 @@ namespace Utility
     std::string ClassString(Classes class_type);
 
     // NOTE: Defaults to a rogue if str not found
-    Classes StringToClass(std::string str);
+    Classes StringToClass(const std::string& str);
 
     uint8_t SumDice(const std::vector<uint8_t>& dice);
 
@@ -55,9 +56,10 @@ namespace Utility
 
     std::string StatString(const std::unordered_map<Stats, uint8_t>& stats);
 
-    int8_t DetermineModifier(uint8_t stat);
+    int8_t DetermineModifier(const uint8_t stat);
 
     void ConditionStringInPlace(std::string& str, const bool remove_whitespace, const bool to_lower);
+    std::string ConditionString(std::string str, const bool remove_whitespace, const bool to_lower);
 };
 
 #endif // !COMBAT_CPP_UTILITY_HPP_
