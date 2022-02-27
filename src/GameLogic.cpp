@@ -16,11 +16,9 @@ GameLogic::GameLogic(const std::string&& player_name, const std::string&& player
     combatants_.emplace(player_key_, std::make_unique<Combatant>(player_name, Utility::StringToClass(player_class)));
 
     // Make enemies a random class
-    std::random_device rdev;
-    std::mt19937 reng(rdev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist(1, 12);
-    combatants_.emplace("baki", std::make_unique<Combatant>("Baki", static_cast<Utility::Classes>(dist(reng))));
-    combatants_.emplace("ohma", std::make_unique<Combatant>("Ohma", static_cast<Utility::Classes>(dist(reng))));
+    auto class_die = Die{ 12 };
+    combatants_.emplace("baki", std::make_unique<Combatant>("Baki", static_cast<Utility::Classes>(class_die.Roll(1).front())));
+    combatants_.emplace("ohma", std::make_unique<Combatant>("Ohma", static_cast<Utility::Classes>(class_die.Roll(1).front())));
 
     // Generate stats and display all combatants_
     std::cout << "The members of this Combat are...\n";
@@ -106,7 +104,7 @@ bool GameLogic::IdleLoop()
         }
         else if (combatants_.find(target) != combatants_.end())
         {
-            Combatant* target_ptr = combatants_[target].get();
+            Combatant* target_ptr = combatants_.at(target).get();
             std::cout << "You step towards " << target << " and prepare for Combat!\n\n";
             uint_fast64_t fight_turn = 0;
 
@@ -120,12 +118,13 @@ bool GameLogic::IdleLoop()
             {
                 std::cout << target_ptr->GetName() << " has the initiative!\n";
             }
+            fight_round_ = 0;
             state_.StartFight(target_ptr, player_initiative);
             return false;
         }
         else
         {
-            std::cout << "Seems you're seeing things that are't there..."
+            std::cout << "Seems you're seeing things that aren't there..."
                 << "Maybe look around and try again\n\n";
             return false;
         }
@@ -168,7 +167,7 @@ void GameLogic::CombatLoop(const GameState::Combat* const combat_state)
     auto player_initiative = combat_state->player_initiative;
 
     std::string action;
-    std::cout << "Combat Round " << std::to_string(fight_round_) << "...\n";
+    std::cout << "Combat Round " << std::to_string(++fight_round_) << "...\n";
     std::cout << player->GetName() << " " << std::to_string(player->GetHealth())
         << "/" << std::to_string(player->GetMaxHealth()) << " health\n";
     std::cout << target_name << " " << std::to_string(target->GetHealth())
@@ -212,6 +211,7 @@ void GameLogic::CombatLoop(const GameState::Combat* const combat_state)
                     {
                         break;
                     }
+                    return;
                 }
             }
             else
@@ -227,6 +227,7 @@ void GameLogic::CombatLoop(const GameState::Combat* const combat_state)
         }
         else
         {
+            std::cout << "\n";
             AttackCheck(target, player);
             if (FeintCheck(player))
             {
@@ -278,7 +279,7 @@ void GameLogic::SelfCheckLoop()
     std::cout << "Well then I guess you DO have time to bleed...\n\n";
     std::cout << "You check your wounds and determine your health is "
         << std::to_string(player->GetHealth())
-        << "/" << std::to_string(combatants_[player_key_]->GetMaxHealth())
+        << "/" << std::to_string(player->GetMaxHealth())
         << "\n\n";
     state_.FinishSelfCheck();
 }
@@ -307,19 +308,24 @@ bool GameLogic::FeintCheck(Combatant* const target)
 void GameLogic::AttackCheck(Combatant* const attacker, Combatant* const target)
 {
     auto attack_result = attacker->Attack(target);
+    std::cout << attacker->GetName() << " rolled a " << std::to_string(attack_result.hit_die) << "!\n";
 
-    if ((attack_result.first == Utility::RollStatus::Failed))
+    switch (attack_result.status)
     {
-        std::cout << "Looks like " << attacker->GetName()
-            << " completely missed!!\n\n";
+    case Utility::RollStatus::CriticalFailure:
+        std::cout << "\tLooks like " << attacker->GetName() << " completely missed!!\n\n";
+        return;
+    case Utility::RollStatus::Failed:
+        std::cout << "\tLooks like " << target->GetName() << "'s armour is too strong!!\n\n";
+        return;
+    case Utility::RollStatus::Success:
+        std::cout << "\t" << attacker->GetName() << " strikes true!!\n";
+        break;
+    case Utility::RollStatus::Critical:
+        std::cout << "\t" << attacker->GetName() << " lands a CRITICAL HIT!!\n";
+        break;
     }
-    else
-    {
-        if (attack_result.first == Utility::RollStatus::Critical)
-        {
-            std::cout << "CRITICAL HIT!!\n";
-        }
-        std::cout << attacker->GetName() << " attacks and manages to inflict "
-            << std::to_string(attack_result.second) << " damage to " << target->GetName() << "\n\n";
-    }
+
+    std::cout << "\t" << attacker->GetName() << " manages to inflict "
+        << std::to_string(attack_result.damage) << " damage to " << target->GetName() << "\n\n";
 }

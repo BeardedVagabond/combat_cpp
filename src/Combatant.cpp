@@ -87,30 +87,39 @@ std::string Combatant::ToString() const
     return str;
 }
 
-std::pair<Utility::RollStatus, int8_t> Combatant::Attack(Combatant* const target) const
+AttackResult Combatant::Attack(Combatant* const target) const
 {
-    auto hit_die = d20_->Roll(1).front();
+    AttackResult result;
+    result.hit_die = d20_->Roll(1).front();
     int8_t damage_dice = 0;
-    Utility::RollStatus roll_status;
     auto damage_die = weapon_.GetDice();
-    if (hit_die == 20)
+    if (result.hit_die == 20)
     {
         damage_dice = Utility::SumDice(damage_die.first->Roll(2 * damage_die.second));
-        roll_status = Utility::RollStatus::Critical;
+        result.status = Utility::RollStatus::Critical;
     }
-    else if (hit_die == 1)
-    {
-        return { Utility::RollStatus::Failed, 0 };
-    }
-    else if (hit_die >= target->armour_class_)
+    else if (result.hit_die >= target->armour_class_)
     {
         damage_dice = Utility::SumDice(damage_die.first->Roll(damage_die.second));
-        roll_status = Utility::RollStatus::Success;
+        result.status = Utility::RollStatus::Success;
+    }
+    else if (result.hit_die == 1)
+    {
+        result.damage = 0;
+        result.status = Utility::RollStatus::CriticalFailure;
+        return result;
+    }
+    else
+    {
+        result.damage = 0;
+        result.status = Utility::RollStatus::Failed;
+        return result;
     }
     auto total_damage = std::clamp(damage_dice + this->modifiers_.at(Utility::Stats::STR), 0,
         static_cast<int>(UINT8_MAX));
     target->SustainDamage(total_damage);
-    return { roll_status, total_damage };
+    result.damage = total_damage;
+    return result;
 }
 
 uint8_t Combatant::Heal(uint8_t num_dice)

@@ -12,13 +12,20 @@
 #include "Weapon.hpp"
 #include "Armour.hpp"
 
+struct AttackResult
+{
+    Utility::RollStatus status;
+    uint8_t hit_die;
+    int8_t damage;
+};
+
 class Combatant
 {
 public:
     Combatant(const std::string& name, const Utility::Classes class_type);
     std::string ToString() const;
 
-    std::pair<Utility::RollStatus, int8_t> Attack(Combatant* const target) const;
+    AttackResult Attack(Combatant* const target) const;
     uint8_t Heal(uint8_t num_dice);
 
     // Note that "target" here is the current target in the fight loop

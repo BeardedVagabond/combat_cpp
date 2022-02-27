@@ -12,6 +12,7 @@ namespace Utility
 {
     enum class RollStatus
     {
+        CriticalFailure,
         Failed,
         Success,
         Critical,
