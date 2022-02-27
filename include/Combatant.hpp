@@ -26,7 +26,7 @@ public:
     std::string ToString() const;
 
     AttackResult Attack(Combatant* const target) const;
-    uint8_t Heal(uint8_t num_dice);
+    uint8_t Heal(const uint8_t num_dice);
 
     // Note that "target" here is the current target in the fight loop
     bool RunAway(Combatant* const target) const;
@@ -40,7 +40,7 @@ public:
     uint8_t GetMaxHealth() const { return max_health_; };
 
     // Be sure to add modifier to damage dice!
-    void SustainDamage(uint8_t total_damage);
+    void SustainDamage(const uint8_t total_damage);
 private:
     std::unique_ptr<Die> d20_;
     std::unique_ptr<Die> d8_;
