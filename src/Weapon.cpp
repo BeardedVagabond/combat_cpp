@@ -23,8 +23,3 @@ std::string Weapon::ToString()
     str += "\nvalue: " + std::to_string(value_);
     return str;
 }
-
-std::pair<Die* const, uint8_t> Weapon::GetDice() const
-{
-    return { damage_die_.get(), num_dice_ };
-}

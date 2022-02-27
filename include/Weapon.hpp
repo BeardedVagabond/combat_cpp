@@ -43,7 +43,7 @@ public:
     Weapon();
     explicit Weapon(const std::string& name);
     std::string ToString();
-    std::pair<Die* const, uint8_t> GetDice() const;
+    std::pair<Die* const, uint8_t> GetDice() const { return { damage_die_.get(), num_dice_ }; };
 private:
     std::unique_ptr<Die> damage_die_;
     uint8_t num_dice_;

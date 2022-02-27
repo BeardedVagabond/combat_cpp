@@ -19,5 +19,7 @@ Armour::Armour(const std::string& name)
 
 std::string Armour::ToString()
 {
-    return std::string();
+    std::string str = name_ + " : " + description_;
+    str += "\nvalue: " + std::to_string(value_);
+    return str;
 }
