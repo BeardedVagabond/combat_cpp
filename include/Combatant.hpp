@@ -25,12 +25,12 @@ public:
     bool RunAway(Combatant* const target) const;
 
     // Roll 1d20 + stat modifier
-    uint8_t StatCheck(Utility::Stats stat);
+    uint8_t StatCheck(const Utility::Stats stat);
 
-    std::string GetName() const;
-    std::string GetClass() const;
-    uint8_t GetHealth() const;
-    uint8_t GetMaxHealth() const;
+    std::string GetName() const { return name_; };
+    std::string GetClass() const { return Utility::ClassString(class_type_); };
+    uint8_t GetHealth() const { return health_; };
+    uint8_t GetMaxHealth() const { return max_health_; };
 
     // Be sure to add modifier to damage dice!
     void SustainDamage(uint8_t total_damage);

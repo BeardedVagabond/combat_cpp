@@ -81,7 +81,7 @@ std::string Combatant::ToString() const
     str += std::to_string(max_health_);
     str += "\n  -> Stats: " + Utility::StatString(stats_);
     str += "\n  -> Modifiers: " + Utility::StatString(modifiers_);
-    str += "\n  -> Armor Class: " + std::to_string(armour_class_);
+    str += "\n  -> Armour Class: " + std::to_string(armour_class_);
     str += "\n  -> Equipment:\n\tWeapon: " + weapon_.GetName();
     str += "\n\tArmour: " + armour_.GetName();
     return str;
@@ -142,26 +142,6 @@ bool Combatant::RunAway(Combatant* const target) const
 uint8_t Combatant::StatCheck(Utility::Stats stat)
 {
     return d20_->Roll(1).front() + stats_.at(stat);
-}
-
-std::string Combatant::GetName() const
-{
-    return name_;
-}
-
-std::string Combatant::GetClass() const
-{
-    return Utility::ClassString(class_type_);
-}
-
-uint8_t Combatant::GetHealth() const
-{
-    return health_;
-}
-
-uint8_t Combatant::GetMaxHealth() const
-{
-    return max_health_;
 }
 
 void Combatant::SustainDamage(uint8_t total_damage)

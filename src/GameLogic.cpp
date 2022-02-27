@@ -12,8 +12,7 @@ GameLogic::GameLogic(const std::string&& player_name, const std::string&& player
     , fight_round_(0)
 {
     // Populate map with combatants_
-    player_key_ = player_name;
-    Utility::ConditionStringInPlace(player_key_, true, true);
+    player_key_ = Utility::ConditionString(player_name, true, true);
     combatants_.emplace(player_key_, std::make_unique<Combatant>(player_name, Utility::StringToClass(player_class)));
 
     // Make enemies a random class

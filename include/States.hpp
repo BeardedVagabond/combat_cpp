@@ -39,7 +39,7 @@ struct GameState
 
     State GetState() { return state_; };
 
-    void StartFight(Combatant* target, const uint8_t initiative) 
+    void StartFight(Combatant* const target, const uint8_t initiative) 
     {
         std::optional<State> new_state;
         if (std::holds_alternative<Idle>(state_))

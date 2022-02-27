@@ -8,9 +8,9 @@
 class Die 
 {
 public:
-    explicit Die(uint8_t num_sides);
+    explicit Die(const uint8_t num_sides);
 
-    std::vector<uint8_t> Roll(uint8_t num_rolls);
+    std::vector<uint8_t> Roll(const uint8_t num_rolls);
 
     std::string ToString() const;
 private:

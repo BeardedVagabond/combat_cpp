@@ -9,7 +9,7 @@ enum class ItemType
 {
     Unknown,
     Weapon,
-    Armor,
+    Armour,
     Accessory,
     Restorative,
 };
@@ -17,10 +17,7 @@ enum class ItemType
 class Item
 {
 public:
-    std::string GetName() const
-    {
-        return name_;
-    }
+    std::string GetName() const { return name_; };
 protected:
     Item()
         : name_()
@@ -29,7 +26,7 @@ protected:
         , type_(ItemType::Unknown)
     { };
 
-    Item(std::string name, std::string description, uint64_t value, ItemType type)
+    Item(const std::string& name, const std::string& description, const uint64_t value, const ItemType type)
         : name_(name)
         , description_(description)
         , value_(value)

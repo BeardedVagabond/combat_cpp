@@ -10,7 +10,7 @@
 
 struct WeaponInfo
 {
-    WeaponInfo(std::string description, int die_n, int num_dice)
+    WeaponInfo(const std::string& description, const int die_n, const int num_dice)
     {
         Description = description;
         DieN = die_n;
@@ -41,7 +41,7 @@ class Weapon : public Item
 {
 public:
     Weapon();
-    explicit Weapon(std::string name);
+    explicit Weapon(const std::string& name);
     std::string ToString();
     std::pair<Die* const, uint8_t> GetDice() const;
 private:

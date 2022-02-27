@@ -32,7 +32,7 @@ namespace Utility
         }
     }
 
-    Classes StringToClass(std::string str)
+    Classes StringToClass(const std::string& str)
     {
         std::unordered_map<std::string, Classes> map
         {
@@ -137,10 +137,12 @@ namespace Utility
         }
         if (to_lower)
         {
-            for (char& c : str)
-            {
-                c = std::tolower(c);
-            }
+            std::transform(str.begin(), str.end(), str.begin(), [](auto& c) {return std::tolower(c); });
         }
+    }
+    std::string ConditionString(std::string str, const bool remove_whitespace, const bool to_lower)
+    {
+        ConditionStringInPlace(str, remove_whitespace, to_lower);
+        return str;
     }
 }

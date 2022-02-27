@@ -16,7 +16,7 @@ enum class ArmourType
 
 struct ArmourInfo
 {
-    ArmourInfo(std::string description, uint8_t ac, ArmourType type)
+    ArmourInfo(const std::string& description, const uint8_t ac, const ArmourType type)
     {
         Description = description;
         AC = ac;
@@ -39,13 +39,13 @@ class Armour : public Item
 {
 public:
     Armour();
-    explicit Armour(std::string name);
+    explicit Armour(const std::string& name);
     std::string ToString();
-    uint8_t GetAC() const;
-    ArmourType GetType() const;
+    uint8_t GetAC() const { return ac_; };
+    ArmourType GetType() const { return armour_type_; };
 private:
     uint8_t ac_;
-    ArmourType type_;
+    ArmourType armour_type_;
 };
 
 #endif //!COMBAT_CPP_ARMOUR_HPP_
