@@ -92,81 +92,75 @@ std::string Combatant::ToString() const
 
 AttackResults Combatant::Attack(Combatant* const target) const
 {
-    AttackResults results;
+    const auto perform_attack = [&target, this](const AttackType attack_type) -> AttackResult
+    {
+        const Weapon* weapon = nullptr;
+        switch (attack_type)
+        {
+        case AttackType::MainMelee:
+            weapon = &main_weapon_;
+            break;
+        case AttackType::OffhandMelee:
+            weapon = &offhand_weapon_.value();
+            break;
+        default:
+            throw std::logic_error("Attack performed with unknown AttackType enum!");
+        }
 
-    AttackResult main_result;
-    main_result.hit_die = d20_->Roll(1).front();
-    int8_t damage_dice = 0;
-    auto damage_die = main_weapon_.GetDice();
-    if (main_result.hit_die == 20)
-    {
-        damage_dice = Utility::SumDice(damage_die.first->Roll(2 * damage_die.second));
-        main_result.status = Utility::RollStatus::Critical;
-    }
-    else if (main_result.hit_die >= target->armour_class_)
-    {
-        damage_dice = Utility::SumDice(damage_die.first->Roll(damage_die.second));
-        main_result.status = Utility::RollStatus::Success;
-    }
-    else if (main_result.hit_die == 1)
-    {
-        main_result.damage = 0;
-        main_result.status = Utility::RollStatus::CriticalFailure;
-    }
-    else
-    {
-        main_result.damage = 0;
-        main_result.status = Utility::RollStatus::Failed;
-    }
-    auto main_damage = std::clamp(damage_dice + this->modifiers_.at(Utility::Stats::STR), 0,
-        static_cast<int>(UINT8_MAX));
-    target->SustainDamage(main_damage);
-    main_result.damage = main_damage;
-    results.first = main_result;
-
-    if (offhand_weapon_.has_value())
-    {
-        AttackResult offhand_result;
-        offhand_result.hit_die = d20_->Roll(1).front();
+        AttackResult result;
+        result.hit_die = d20_->Roll(1).front();
         int8_t damage_dice = 0;
-        auto damage_die = main_weapon_.GetDice();
-        if (offhand_result.hit_die == 20)
+        auto damage_die = weapon->GetDice();
+        if (result.hit_die == 20)
         {
             damage_dice = Utility::SumDice(damage_die.first->Roll(2 * damage_die.second));
-            offhand_result.status = Utility::RollStatus::Critical;
+            result.status = Utility::RollStatus::Critical;
         }
-        else if (offhand_result.hit_die >= target->armour_class_)
+        else if (result.hit_die >= target->armour_class_)
         {
             damage_dice = Utility::SumDice(damage_die.first->Roll(damage_die.second));
-            offhand_result.status = Utility::RollStatus::Success;
+            result.status = Utility::RollStatus::Success;
         }
-        else if (offhand_result.hit_die == 1)
+        else if (result.hit_die == 1)
         {
-            offhand_result.damage = 0;
-            offhand_result.status = Utility::RollStatus::CriticalFailure;
+            result.damage = 0;
+            result.status = Utility::RollStatus::CriticalFailure;
+            return result;
         }
         else
         {
-            offhand_result.damage = 0;
-            offhand_result.status = Utility::RollStatus::Failed;
+            result.damage = 0;
+            result.status = Utility::RollStatus::Failed;
+            return result;
         }
 
-        int8_t offhand_damage = 0;
-        if (const auto modifier = this->modifiers_.at(Utility::Stats::STR); modifier >= 0)
+        int8_t damage = 0;
+        switch (attack_type)
         {
-            offhand_damage = std::clamp(static_cast<int>(damage_dice), 0, static_cast<int>(UINT8_MAX));
-        }
-        else
-        {
-            offhand_damage = std::clamp(damage_dice + this->modifiers_.at(Utility::Stats::STR), 0,
+        case AttackType::MainMelee:
+            damage = std::clamp(damage_dice + this->modifiers_.at(Utility::Stats::STR), 0,
                 static_cast<int>(UINT8_MAX));
+            break;
+        case AttackType::OffhandMelee:
+            if (const auto modifier = this->modifiers_.at(Utility::Stats::STR); modifier >= 0)
+            {
+                damage = std::clamp(static_cast<int>(damage_dice), 0, static_cast<int>(UINT8_MAX));
+            }
+            else
+            {
+                damage = std::clamp(damage_dice + this->modifiers_.at(Utility::Stats::STR), 0,
+                    static_cast<int>(UINT8_MAX));
+            }
+            break;
         }
-        target->SustainDamage(offhand_damage);
-        offhand_result.damage = offhand_damage;
+        target->SustainDamage(damage);
+        result.damage = damage;
+        return result;
+    };
 
-        results.second = offhand_result;
-    }
-
+    AttackResults results;
+    results.first = perform_attack(AttackType::MainMelee);
+    if (offhand_weapon_.has_value()) { results.second = perform_attack(AttackType::OffhandMelee); };
     return results;
 }
 

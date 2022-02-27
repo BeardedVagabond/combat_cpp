@@ -22,6 +22,12 @@ struct AttackResult
 
 typedef std::pair<AttackResult, std::optional<AttackResult>> AttackResults;
 
+enum class AttackType
+{
+    MainMelee,
+    OffhandMelee,
+};
+
 class Combatant
 {
 public:
