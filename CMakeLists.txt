@@ -107,7 +107,7 @@ target_link_libraries(exampleMain
 )
 
 add_executable(runAllTests
-    src/runAllTests.cpp
+    src/all_tests.cpp
     ${all_sources}
 )
 
@@ -128,3 +128,6 @@ target_link_libraries(runAllTests
         gtest_main
         messages
 )
+
+enable_testing()
+add_test(GTest runAllTests)
