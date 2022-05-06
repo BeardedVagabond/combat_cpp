@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package combatcpp;
+
+message CompileTest {
+    string name = 1;
+    enum Type {
+        TYPE_UNDEFINED = 0;
+        TYPE_REQUEST = 1;
+        TYPE_REPLY = 2;
+        TYPE_MSG = 3;
+    }
+    Type type = 2;
+}
