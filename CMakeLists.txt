@@ -9,7 +9,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #----------------------------------------------------------------
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 add_definitions(-DCMAKE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
-find_package(protobuf CONFIG REQUIRED)
 
 #----------------------------------------------------------------
 # GTest External Project (from gtest documentation)
@@ -129,4 +128,3 @@ target_link_libraries(runAllTests
         gtest_main
         messages
 )
-
