@@ -35,50 +35,50 @@ set(all_sources
 #----------------------------------------------------------------
 # Executables
 #----------------------------------------------------------------
-add_executable(exampleMain
+add_executable(solo_combat
     src/main.cpp
     ${all_sources}
 )
 
-target_compile_features(exampleMain
+target_compile_features(solo_combat
     PRIVATE
         cxx_std_17
 )
 
-target_include_directories(exampleMain
+target_include_directories(solo_combat
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(exampleMain
+target_link_libraries(solo_combat
     PUBLIC
         messages
 )
 
-add_executable(runAllTests
+add_executable(solo_combat_tests
     src/all_tests.cpp
     ${all_sources}
 )
 
-target_compile_features(runAllTests
+target_compile_features(solo_combat_tests
     PRIVATE
         cxx_std_17
 )
 
-target_include_directories(runAllTests
+target_include_directories(solo_combat_tests
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(runAllTests
+target_link_libraries(solo_combat_tests
     PUBLIC
         gtest_main
         messages
 )
 
 enable_testing()
-add_test(GTest runAllTests)
+add_test(GTest solo_combat_tests)
