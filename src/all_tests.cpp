@@ -3,6 +3,10 @@
 #include "Combatant.hpp"
 #include "GameLogic.hpp"
 
+#include "messages/compile_test.pb.h"
+
+#pragma region CombatantTests
+
 class CombatantTest : public testing::Test
 {
 protected:
@@ -100,6 +104,10 @@ TEST_F(CombatantTest, AttackDoesDamage)
     while (player.Attack(&enemy).first.damage == 0);
     EXPECT_LT(enemy.GetHealth(), max_health);
 }
+
+#pragma endregion
+
+#pragma region StateTests
 
 class StateTest : public testing::Test
 {
@@ -231,7 +239,26 @@ TEST_F(StateTest, InvalidTransitionsFromLookingAroundDontChangeState)
     EXPECT_TRUE(std::holds_alternative<GameState::LookingAround>(game_state.GetState()));
 }
 
-// LEGACY TESTS
+#pragma endregion
+
+#pragma region ProtoTests
+
+TEST(ProtoTests, CanBuildCompileTestMessage)
+{
+    constexpr auto kName = "test";
+    constexpr auto kType = combatcpp::CompileTest_Type::CompileTest_Type_TYPE_MSG;
+
+    combatcpp::CompileTest msg;
+    msg.set_name(kName);
+    msg.set_type(kType);
+
+    EXPECT_STREQ(kName, msg.name().c_str());
+    EXPECT_EQ(kType, msg.type());
+}
+
+#pragma endregion
+
+#pragma region LegacyTests
 /* 
 TEST_F(CombatantTest, SetStatsChangesStatsAndModifiers)
 {
@@ -270,3 +297,4 @@ TEST_F(CombatantTest, SetStatsChangesStatsAndModifiers)
     }
 }
 */
+#pragma endregion

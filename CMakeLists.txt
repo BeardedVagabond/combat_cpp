@@ -10,7 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 add_definitions(-DCMAKE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
-
 #----------------------------------------------------------------
 # GTest External Project (from gtest documentation)
 # https://bit.ly/3g8iXeM
@@ -48,6 +47,10 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
+#----------------------------------------------------------------
+# Protobuf Messages
+#----------------------------------------------------------------
+add_subdirectory(messages)
 
 #----------------------------------------------------------------
 # Main Sources
@@ -98,8 +101,13 @@ target_include_directories(exampleMain
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
+target_link_libraries(exampleMain
+    PUBLIC
+        messages
+)
+
 add_executable(runAllTests
-    src/runAllTests.cpp
+    src/all_tests.cpp
     ${all_sources}
 )
 
@@ -116,6 +124,10 @@ target_include_directories(runAllTests
 )
 
 target_link_libraries(runAllTests
-    gtest_main
+    PUBLIC
+        gtest_main
+        messages
 )
 
+enable_testing()
+add_test(GTest runAllTests)
