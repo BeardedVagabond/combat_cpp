@@ -15,5 +15,9 @@ target_include_directories(messages
     PUBLIC 
         INTERFACE ${CMAKE_CURRENT_BINARY_DIR}
 )
+target_compile_features(messages
+    PRIVATE
+        cxx_std_17
+)
 
 message("-- Protofile Generation done")
