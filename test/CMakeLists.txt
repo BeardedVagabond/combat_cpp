@@ -1,14 +1,27 @@
+#----------------------------------------------------------------
+# GTest 
+#----------------------------------------------------------------
+
+include(FetchContent)
+FetchContent_Declare(
+    gtest
+    GIT_REPOSITORY    https://github.com/google/googletest.git
+    GIT_TAG           main
+)
+FetchContent_MakeAvailable(gtest)
+
 macro(make_test_exe name)
-    add_executable(${name}
-        ${name}_tests.cpp
+    set(TEST_NAME "test_${name}")
+    add_executable(${TEST_NAME}
+        ${TEST_NAME}.cpp
     )
 
-    target_compile_features(${name}
+    target_compile_features(${TEST_NAME}
     PRIVATE
         cxx_std_17
     )
 
-    target_link_libraries(${name}
+    target_link_libraries(${TEST_NAME}
     PUBLIC
         gtest_main
     PRIVATE
@@ -16,10 +29,9 @@ macro(make_test_exe name)
         combat_cpp
     )
 
-    add_test(GTest ${name})
+    add_test(${TEST_NAME} ${TEST_NAME})
 endmacro(make_test_exe)
 
-enable_testing()
 make_test_exe(combatant)
-# make_test_exe(proto)
+make_test_exe(proto)
 make_test_exe(state)
