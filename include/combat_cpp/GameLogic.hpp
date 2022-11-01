@@ -5,9 +5,9 @@
 #include <memory>
 #include <unordered_map>
 
-#include "Combatant.hpp"
-#include "Die.hpp"
-#include "States.hpp"
+#include "combat_cpp/Combatant.hpp"
+#include "combat_cpp/Die.hpp"
+#include "combat_cpp/States.hpp"
 
 class GameLogic
 {

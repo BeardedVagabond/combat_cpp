@@ -8,10 +8,10 @@
 
 #include <cstdint>
 
-#include "Utility.hpp"
-#include "Die.hpp"
-#include "Weapon.hpp"
-#include "Armour.hpp"
+#include "combat_cpp/Utility.hpp"
+#include "combat_cpp/Die.hpp"
+#include "combat_cpp/Weapon.hpp"
+#include "combat_cpp/Armour.hpp"
 
 struct AttackResult
 {

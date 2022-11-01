@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "GameLogic.hpp"
+#include "combat_cpp/GameLogic.hpp"
 
 int main()
 {

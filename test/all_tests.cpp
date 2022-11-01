@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "Combatant.hpp"
-#include "GameLogic.hpp"
+#include "combat_cpp/Combatant.hpp"
+#include "combat_cpp/GameLogic.hpp"
 
 #include "messages/compile_test.pb.h"
 

@@ -5,8 +5,8 @@
 #include <unordered_map>
 #include <utility>
 
-#include "Item.hpp"
-#include "Die.hpp"
+#include "combat_cpp/Item.hpp"
+#include "combat_cpp/Die.hpp"
 
 struct WeaponInfo
 {

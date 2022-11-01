@@ -5,7 +5,7 @@
 #include <variant>
 #include <optional>
 
-#include "Combatant.hpp"
+#include "combat_cpp/Combatant.hpp"
 
 struct GameState
 {

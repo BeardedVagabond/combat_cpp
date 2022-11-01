@@ -1,8 +1,8 @@
-#include "GameLogic.hpp"
+#include "combat_cpp/GameLogic.hpp"
 
 #include <iostream>
 
-#include "Utility.hpp"
+#include "combat_cpp/Utility.hpp"
 
 GameLogic::GameLogic(const std::string&& player_name, const std::string&& player_class)
     : state_()
