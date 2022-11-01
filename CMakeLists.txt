@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.21)
 project(combat_cpp VERSION 0.1.0 LANGUAGES CXX)
 
 #----------------------------------------------------------------
@@ -29,7 +29,7 @@ add_subdirectory(messages)
 #----------------------------------------------------------------
 file(GLOB sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-add_library(${PROJECT_NAME} ${sources})
+add_library(${PROJECT_NAME} SHARED ${sources})
 
 target_include_directories(${PROJECT_NAME}  
     PUBLIC 
