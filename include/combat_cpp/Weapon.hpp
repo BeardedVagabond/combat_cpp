@@ -10,7 +10,7 @@
 
 struct WeaponInfo
 {
-    WeaponInfo(const std::string& description, const int die_n, const int num_dice)
+    WeaponInfo(const std::string& description, const uint8_t die_n, const uint8_t num_dice)
     {
         Description = description;
         DieN = die_n;

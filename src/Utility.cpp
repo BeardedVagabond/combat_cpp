@@ -57,14 +57,14 @@ namespace Utility
         }
         else
         {
-            return Utility::Classes::Rogue;
+            return Classes::Rogue;
         }
     }
 
     uint8_t SumDice(const std::vector<uint8_t>& dice)
     {
         return std::reduce(dice.cbegin(), dice.cend());
-    };
+    }
 
     std::string StatString(const std::unordered_map<Stats, int8_t>& stats)
     {
@@ -77,7 +77,7 @@ namespace Utility
         str += ", CHR: " + std::to_string(stats.at(Stats::CHR));
         str += " }";
         return str;
-    };
+    }
 
     std::string StatString(const std::unordered_map<Stats, uint8_t>& stats)
     {
@@ -91,6 +91,7 @@ namespace Utility
         str += " }";
         return str;
     }
+
     int8_t DetermineModifier(uint8_t stat)
     {
         if (2 <= stat && stat <= 4) {
@@ -136,6 +137,7 @@ namespace Utility
             std::transform(str.begin(), str.end(), str.begin(), [](auto& c) {return std::tolower(c); });
         }
     }
+
     std::string ConditionString(std::string str, const bool remove_whitespace, const bool to_lower)
     {
         ConditionStringInPlace(str, remove_whitespace, to_lower);
