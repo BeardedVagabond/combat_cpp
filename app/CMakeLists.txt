@@ -13,4 +13,9 @@ target_link_libraries(main_game
         combat_cpp
 )
 
+target_compile_options(main_game
+    PRIVATE
+        ${PEDANTIC_COMPILE_FLAGS}
+)
+
 message("-- DONE configuring application")

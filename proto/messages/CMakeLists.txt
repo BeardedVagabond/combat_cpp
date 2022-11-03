@@ -5,7 +5,7 @@ file(GLOB PROTO_FILES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.proto")
 message("Generating proto files for: ${PROTO_FILES}")
 PROTOBUF_GENERATE_CPP(PROTO_SOURCES PROTO_HEADERS ${PROTO_FILES})
 
-add_library(messages STATIC ${PROTO_SOURCES} ${PROTO_HEADERS})
+add_library(messages ${PROTO_SOURCES} ${PROTO_HEADERS})
 target_link_libraries(messages 
     PUBLIC
         protobuf::libprotoc 
@@ -14,6 +14,10 @@ target_link_libraries(messages
 target_compile_features(messages
     PRIVATE
         cxx_std_17
+)
+target_compile_options(messages
+    PRIVATE
+        ${PEDANTIC_COMPILE_FLAGS}
 )
 
 message("-- Protofile Generation done")
