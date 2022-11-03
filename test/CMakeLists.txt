@@ -1,14 +1,4 @@
-#----------------------------------------------------------------
-# GTest 
-#----------------------------------------------------------------
-
-include(FetchContent)
-FetchContent_Declare(
-    gtest
-    GIT_REPOSITORY    https://github.com/google/googletest.git
-    GIT_TAG           main
-)
-FetchContent_MakeAvailable(gtest)
+find_package(GTest CONFIG REQUIRED)
 
 macro(make_test_exe name)
     set(TEST_NAME "test_${name}")
@@ -22,9 +12,8 @@ macro(make_test_exe name)
     )
 
     target_link_libraries(${TEST_NAME}
-        PUBLIC
-            gtest_main
         PRIVATE
+            GTest::gtest_main
             messages
             combat_cpp
     )

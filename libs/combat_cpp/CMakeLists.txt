@@ -1,6 +1,6 @@
 file(GLOB sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-add_library(${PROJECT_NAME} SHARED ${sources})
+add_library(${PROJECT_NAME} STATIC ${sources})
 
 target_include_directories(${PROJECT_NAME}  
     PUBLIC 
