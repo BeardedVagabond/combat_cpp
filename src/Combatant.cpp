@@ -1,4 +1,4 @@
-#include "Combatant.hpp"
+#include "combat_cpp/Combatant.hpp"
 
 Combatant::Combatant(const std::string& name, const Utility::Classes class_type)
     : Combatant()

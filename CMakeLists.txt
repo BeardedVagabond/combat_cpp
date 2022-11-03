@@ -1,133 +1,87 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.21)
 project(combat_cpp VERSION 0.1.0 LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-
-#----------------------------------------------------------------
-# Packages
-#----------------------------------------------------------------
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-add_definitions(-DCMAKE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
-
-#----------------------------------------------------------------
-# GTest External Project (from gtest documentation)
-# https://bit.ly/3g8iXeM
-#----------------------------------------------------------------
-
-# Download and unpack googletest at configure time
-configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-if(result)
-  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-endif()
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-if(result)
-  message(FATAL_ERROR "Build step for googletest failed: ${result}")
-endif()
-
-# Prevent overriding the parent project's compiler/linker
-# settings on Windows
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-# Add googletest directly to our build. This defines
-# the gtest and gtest_main targets.
-add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
-                 ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
-                 EXCLUDE_FROM_ALL)
-
-# The gtest/gtest_main targets carry header search path
-# dependencies automatically when using CMake 2.8.11 or
-# later. Otherwise we have to add them here ourselves.
-if (CMAKE_VERSION VERSION_LESS 2.8.11)
-  include_directories("${gtest_SOURCE_DIR}/include")
-endif()
-
-#----------------------------------------------------------------
-# Protobuf Messages
-#----------------------------------------------------------------
-add_subdirectory(messages)
-
-#----------------------------------------------------------------
-# Main Sources
-#----------------------------------------------------------------
-set(ser_includes
-    include/Die.hpp
-    include/Combatant.hpp
-    include/Utility.hpp
-    include/Item.hpp
-    include/Weapon.hpp
-    include/Armour.hpp
-    include/States.hpp
-    include/GameLogic.hpp
-)
-
-set(ser_sources
-    src/Die.cpp
-    src/Combatant.cpp
-    src/Utility.cpp
-    src/Weapon.cpp
-    src/Armour.cpp
-    src/GameLogic.cpp
-)
-
-set(all_sources
-    ${ser_includes}
-    ${ser_sources}
-)
-
-
-#----------------------------------------------------------------
-# Executables
-#----------------------------------------------------------------
-add_executable(exampleMain
-    src/main.cpp
-    ${all_sources}
-)
-
-target_compile_features(exampleMain
-    PRIVATE
-        cxx_std_17
-)
-
-target_include_directories(exampleMain
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
-
-target_link_libraries(exampleMain
-    PUBLIC
-        messages
-)
-
-add_executable(runAllTests
-    src/all_tests.cpp
-    ${all_sources}
-)
-
-target_compile_features(runAllTests
-    PRIVATE
-        cxx_std_17
-)
-
-target_include_directories(runAllTests
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
-
-target_link_libraries(runAllTests
-    PUBLIC
-        gtest_main
-        messages
-)
-
 enable_testing()
-add_test(GTest runAllTests)
+
+#----------------------------------------------------------------
+# Set compiler flags 
+# (modified from fmtlib: https://github.com/fmtlib/fmt/blob/master/CMakeLists.txt)
+#----------------------------------------------------------------
+include(CheckCXXCompilerFlag)
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  set(PEDANTIC_COMPILE_FLAGS -pedantic-errors -Wall -Wextra -pedantic
+      -Wold-style-cast -Wundef
+      -Wredundant-decls -Wwrite-strings -Wpointer-arith
+      -Wcast-qual -Wformat=2 -Wmissing-include-dirs
+      -Wcast-align
+      -Wctor-dtor-privacy -Wdisabled-optimization
+      -Winvalid-pch -Woverloaded-virtual
+      -Wconversion -Wundef
+      -Wno-ctor-dtor-privacy -Wno-format-nonliteral)
+  if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.6)
+      set(PEDANTIC_COMPILE_FLAGS ${PEDANTIC_COMPILE_FLAGS}
+         -Wno-dangling-else -Wno-unused-local-typedefs)
+  endif ()
+  if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
+      set(PEDANTIC_COMPILE_FLAGS ${PEDANTIC_COMPILE_FLAGS} -Wdouble-promotion
+          -Wtrampolines -Wzero-as-null-pointer-constant -Wuseless-cast
+          -Wvector-operation-performance -Wsized-deallocation -Wshadow)
+  endif ()
+  if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 6.0)
+      set(PEDANTIC_COMPILE_FLAGS ${PEDANTIC_COMPILE_FLAGS} -Wshift-overflow=2
+          -Wnull-dereference -Wduplicated-cond)
+  endif ()
+endif ()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(PEDANTIC_COMPILE_FLAGS -Wall -Wextra -pedantic -Wconversion -Wundef
+      -Wdeprecated -Wweak-vtables -Wshadow
+      -Wno-gnu-zero-variadic-macro-arguments)
+  check_cxx_compiler_flag(-Wzero-as-null-pointer-constant HAS_NULLPTR_WARNING)
+  if (HAS_NULLPTR_WARNING)
+    set(PEDANTIC_COMPILE_FLAGS ${PEDANTIC_COMPILE_FLAGS}
+        -Wzero-as-null-pointer-constant)
+  endif ()
+endif ()
+
+if (MSVC)
+    set(PEDANTIC_COMPILE_FLAGS /W3)
+endif ()
+
+#----------------------------------------------------------------
+# Add messages library
+#----------------------------------------------------------------
+add_subdirectory(proto)
+
+#----------------------------------------------------------------
+# Add main library
+#----------------------------------------------------------------
+file(GLOB COMBAT_CPP_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+file(GLOB COMBAT_CPP_HEADERS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include/combat_cpp/*.hpp")
+
+add_library(${PROJECT_NAME} ${COMBAT_CPP_SOURCES} ${COMBAT_CPP_HEADERS})
+
+target_include_directories(${PROJECT_NAME}  
+    PUBLIC 
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_compile_features(${PROJECT_NAME}
+    PRIVATE
+        cxx_std_17
+)
+
+target_compile_options(${PROJECT_NAME}
+    PRIVATE
+        ${PEDANTIC_COMPILE_FLAGS}
+)
+
+#----------------------------------------------------------------
+# Add Apps
+#----------------------------------------------------------------
+add_subdirectory(app)
+
+#----------------------------------------------------------------
+# Add Tests
+#----------------------------------------------------------------
+add_subdirectory(test)

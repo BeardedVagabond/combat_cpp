@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <utility>
 
-#include "Item.hpp"
+#include "combat_cpp/Item.hpp"
 
 enum class ArmourType
 {

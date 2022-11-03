@@ -60,6 +60,6 @@ namespace Utility
 
     void ConditionStringInPlace(std::string& str, const bool remove_whitespace, const bool to_lower);
     std::string ConditionString(std::string str, const bool remove_whitespace, const bool to_lower);
-};
+}
 
 #endif // !COMBAT_CPP_UTILITY_HPP_

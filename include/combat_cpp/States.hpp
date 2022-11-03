@@ -5,7 +5,7 @@
 #include <variant>
 #include <optional>
 
-#include "Combatant.hpp"
+#include "combat_cpp/Combatant.hpp"
 
 struct GameState
 {
@@ -14,8 +14,8 @@ struct GameState
     struct Combat 
     {
         Combat() : target(nullptr), target_key(), player_initiative(0) {};
-        Combat(Combatant* const target, const uint8_t initiative) 
-            : target(target)
+        Combat(Combatant* const target_, const uint8_t initiative) 
+            : target(target_)
             , target_key()
             , player_initiative(initiative)
         {
@@ -52,6 +52,7 @@ struct GameState
         }
         if (new_state.has_value()) { state_ = new_state.value(); };
     };
+
     void FinishFight()
     {
         std::optional<State> new_state;
@@ -79,6 +80,7 @@ struct GameState
         }
         if (new_state.has_value()) { state_ = new_state.value(); };
     };
+
     void FinishRest()
     {
         std::optional<State> new_state;
@@ -106,6 +108,7 @@ struct GameState
         }
         if (new_state.has_value()) { state_ = new_state.value(); };
     };
+
     void FinishLook()
     {
         std::optional<State> new_state;
@@ -133,6 +136,7 @@ struct GameState
         }
         if (new_state.has_value()) { state_ = new_state.value(); };
     };
+
     void FinishSelfCheck()
     {
         std::optional<State> new_state;

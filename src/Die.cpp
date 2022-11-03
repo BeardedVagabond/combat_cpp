@@ -1,4 +1,4 @@
-#include "Die.hpp"
+#include "combat_cpp/Die.hpp"
 
 Die::Die(const uint8_t num_sides)
     : sides_(num_sides)

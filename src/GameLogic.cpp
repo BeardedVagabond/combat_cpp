@@ -1,8 +1,8 @@
-#include "GameLogic.hpp"
+#include "combat_cpp/GameLogic.hpp"
 
 #include <iostream>
 
-#include "Utility.hpp"
+#include "combat_cpp/Utility.hpp"
 
 GameLogic::GameLogic(const std::string&& player_name, const std::string&& player_class)
     : state_()
@@ -26,7 +26,7 @@ GameLogic::GameLogic(const std::string&& player_name, const std::string&& player
     {
         std::cout << i->second->ToString() << "\n\n";
     }
-};
+}
 
 bool GameLogic::Execute()
 {
@@ -106,7 +106,6 @@ bool GameLogic::IdleLoop()
         {
             Combatant* target_ptr = combatants_.at(target).get();
             std::cout << "You step towards " << target << " and prepare for Combat!\n\n";
-            uint_fast64_t fight_turn = 0;
 
             // NOTE: This will be reafactored in future multiple opponent combat
             uint8_t player_initiative = (player->StatCheck(Utility::Stats::DEX) > target_ptr->StatCheck(Utility::Stats::DEX)) ? 1 : 0;
