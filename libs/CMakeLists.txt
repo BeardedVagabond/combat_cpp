@@ -1,2 +1,0 @@
-add_subdirectory(combat_cpp)
-add_subdirectory(messages)

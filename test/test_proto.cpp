@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "compile_test.pb.h"
+#include "messages/compile_test.pb.h"
 
 TEST(ProtoTests, CanBuildCompileTestMessage)
 {
