@@ -6,6 +6,8 @@ enable_testing()
 # Set compiler flags 
 # (modified from fmtlib: https://github.com/fmtlib/fmt/blob/master/CMakeLists.txt)
 #----------------------------------------------------------------
+include(CheckCXXCompilerFlag)
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   set(PEDANTIC_COMPILE_FLAGS -pedantic-errors -Wall -Wextra -pedantic
       -Wold-style-cast -Wundef
